@@ -184,6 +184,7 @@ if (document.getElementById('message'))
         var box = document.getElementById('journal-scroll');
         box.scrollTop = box.scrollHeight;
         copytext.value = "";
+        
     }
 
 
@@ -208,7 +209,14 @@ socket.on(uid, text => {
     var box = document.getElementById('journal-scroll');
     box.scrollTop = box.scrollHeight;
     }
+    
+        
 
+      document.body.innerHTML+= '<div class="receive" id = "messagePopup"style = "position:absolute;right:calc(50% - 10rem);z-index:100;">' + '<div class="receive1" >' + '<div class="receiveMessage">' + '<p class="message">' + text.messagE + '</p>' + '</div>' + '<span class="time">' + currentdate.getHours() + ':' + currentdate.getMinutes() + '</span>' + '</div>' + '</div>';
+      
+      setTimeout(function () { document.getElementById("messagePopup").remove() }, 3000);
+
+    
     let item = {
 
         'mssg': text.messagE,
