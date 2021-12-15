@@ -30,7 +30,7 @@ const analytics = getAnalytics(app);
 const db = firebase.firestore()
 const template = document.createElement('div');
 template.style = "color:white;z-index:10"
-template.innerHTML = uid;
+template.innerHTML = "uid: " + uid;
 
 document.body.appendChild(template);
 let html = ''
