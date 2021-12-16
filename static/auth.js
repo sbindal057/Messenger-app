@@ -14,7 +14,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore()
-db.settings({timestampsInSnapshots: true});
+  db.settings({ timestampsInSnapshots: true });
 
   firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE);
 
@@ -27,7 +27,7 @@ db.settings({timestampsInSnapshots: true});
       firebase
         .auth()
         .signInWithEmailAndPassword(login, password)
-        
+
         .then(({ user }) => {
           sessionStorage.setItem('uid', user.uid)
           return user.getIdToken().then((idToken) => {
@@ -42,110 +42,170 @@ db.settings({timestampsInSnapshots: true});
             });
           });
         })
-        .then(() =>{
-          return db.collection('contacts').doc(sessionStorage.getItem('uid')).set({
-            'name':{email:"",chat:{}}
+        .then(() => {
+          db.collection('contacts').doc(sessionStorage.getItem('uid')).get().then((doc) => {
+            if (doc.exists) {
+                console.log("Document data:", doc);
+            }
+            else{
+              return db.collection('contacts').doc(sessionStorage.getItem('uid')).set({
+                'name': { email: "", chat: {} }
+              })
+            }
         })
-      })       
+        })
+        .then(() => {
+          db.collection('connections').doc(sessionStorage.getItem('uid')).get().then((doc) => {
+            if (doc.exists) {
+                console.log("Document data:", doc);
+            }
+            else{
+              return db.collection('connections').doc(sessionStorage.getItem('uid')).set({
+                'name': []
+              })
+            }
+        })
+        })
         .then(() => {
           return firebase.auth().signOut();
         })
         .then(() => {
           window.location.assign("/profile");
         })
-        .catch((error)=>{
+        .catch((error) => {
           alert(error.message);
         }
 
         )
-        
+
         ;
-        
+
       return false;
-      
+
     });
 
- 
 
 
-    document
+
+  document
     .getElementById("google_signin")
     .addEventListener('click', (event) => {
-  
-    const provider = new firebase.auth.GoogleAuthProvider();
-    firebase.
-      auth().
-      signInWithPopup(provider)
-      
-      .then(({ user }) => {
-        sessionStorage.setItem('uid', user.uid)
-        // sessionStorage.setItem('email',user.email)
-        
-    
-        return user.getIdToken().then((idToken) => {
-          return fetch("/sessionLogin", {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "CSRF-Token": Cookies.get("XSRF-TOKEN"),
-            },
-            body: JSON.stringify({ idToken }),
+
+      const provider = new firebase.auth.GoogleAuthProvider();
+      firebase.
+        auth().
+        signInWithPopup(provider)
+
+        .then(({ user }) => {
+          sessionStorage.setItem('uid', user.uid)
+          // sessionStorage.setItem('email',user.email)
+
+
+          return user.getIdToken().then((idToken) => {
+            return fetch("/sessionLogin", {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                "CSRF-Token": Cookies.get("XSRF-TOKEN"),
+              },
+              body: JSON.stringify({ idToken }),
+            });
           });
+        })
+        .then(() => {
+          db.collection('contacts').doc(sessionStorage.getItem('uid')).get().then((doc) => {
+            if (doc.exists) {
+                console.log("Document data:", doc);
+            }
+            else{
+              return db.collection('contacts').doc(sessionStorage.getItem('uid')).set({
+                'name': { email: "", chat: {} }
+              })
+            }
+        })
+        })
+        .then(() => {
+          db.collection('connections').doc(sessionStorage.getItem('uid')).get().then((doc) => {
+            if (doc.exists) {
+                console.log("Document data:", doc);
+            }
+            else{
+              return db.collection('connections').doc(sessionStorage.getItem('uid')).set({
+                'name': []
+              })
+            }
+        })
+        })
+        .then(() => {
+          return firebase.auth().signOut();
+        })
+        .then(() => {
+          window.location.assign("/profile");
         });
-      })
-      .then(() =>{
-        return db.collection('contacts').doc(sessionStorage.getItem('uid')).set({
-          'name':{email:"",chat:{}}
-      })
-      })
-      .then(() => {
-        return firebase.auth().signOut();
-      })
-      .then(() => {
-        window.location.assign("/profile");
-      });
-      
 
-  });
 
-  
-  document
-  .getElementById("ms_signin")
-  .addEventListener('click', (event) => {
-  
-  const provider =  new firebase.auth.OAuthProvider('microsoft.com');
-  
-  firebase.
-    auth().
-    signInWithPopup(provider)
-    .then(({ user }) => {
-      sessionStorage.setItem('uid', user.uid)
-      return user.getIdToken().then((idToken) => {
-        return fetch("/sessionLogin", {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "CSRF-Token": Cookies.get("XSRF-TOKEN"),
-          },
-          body: JSON.stringify({ idToken }),
-        });
-      });
-    })
-    .then(() =>{
-      return db.collection('contacts').doc(sessionStorage.getItem('uid')).set({
-        'name':{email:"",chat:{}}
-    })
-  })
-    .then(() => {
-      return firebase.auth().signOut();
-    })
-    .then(() => {
-      window.location.assign("/profile");
     });
 
-});
+
+  document
+    .getElementById("ms_signin")
+    .addEventListener('click', (event) => {
+
+      const provider = new firebase.auth.OAuthProvider('microsoft.com');
+
+      firebase.
+        auth().
+        signInWithPopup(provider)
+        .then(({ user }) => {
+          sessionStorage.setItem('uid', user.uid)
+          return user.getIdToken().then((idToken) => {
+            return fetch("/sessionLogin", {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                "CSRF-Token": Cookies.get("XSRF-TOKEN"),
+              },
+              body: JSON.stringify({ idToken }),
+            });
+          });
+        })
+        .then(() => {
+          db.collection('contacts').doc(sessionStorage.getItem('uid')).get().then((doc) => {
+            if (doc.exists) {
+                console.log("Document data:", doc);
+            }
+            else{
+              return db.collection('contacts').doc(sessionStorage.getItem('uid')).set({
+                'name': { email: "", chat: {} }
+              })
+            }
+        })
+        })
+        .then(() => {
+          db.collection('connections').doc(sessionStorage.getItem('uid')).get().then((doc) => {
+            if (doc.exists) {
+                console.log("Document data:", doc);
+            }
+            else{
+              return db.collection('connections').doc(sessionStorage.getItem('uid')).set({
+                'name': []
+              })
+            }
+        })
+        })
+        .then(() => {
+          return firebase.auth().signOut();
+        })
+        .then(() => {
+          window.location.assign("/profile");
+        });
+
+    });
+
+
+
   const github_signin = document.getElementById("github_signin");
 
 
@@ -168,11 +228,30 @@ db.settings({timestampsInSnapshots: true});
           });
         });
       })
-      .then(() =>{
-        return db.collection('contacts').doc(sessionStorage.getItem('uid')).set({
-          'name':{email:"",chat:{}}
+      .then(() => {
+        db.collection('contacts').doc(sessionStorage.getItem('uid')).get().then((doc) => {
+          if (doc.exists) {
+              console.log("Document data:", doc);
+          }
+          else{
+            return db.collection('contacts').doc(sessionStorage.getItem('uid')).set({
+              'name': { email: "", chat: {} }
+            })
+          }
       })
-    })
+      })
+      .then(() => {
+        db.collection('connections').doc(sessionStorage.getItem('uid')).get().then((doc) => {
+          if (doc.exists) {
+              console.log("Document data:", doc);
+          }
+          else{
+            return db.collection('connections').doc(sessionStorage.getItem('uid')).set({
+              'name': []
+            })
+          }
+      })
+      })
       .then(() => {
         return firebase.auth().signOut();
       })
