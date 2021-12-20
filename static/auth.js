@@ -49,7 +49,7 @@ window.addEventListener("DOMContentLoaded", () => {
             }
             else{
               return db.collection('contacts').doc(sessionStorage.getItem('uid')).set({
-                'name': { email: "", chat: {} }
+                'list': {}
               })
             }
         })
@@ -120,7 +120,7 @@ window.addEventListener("DOMContentLoaded", () => {
             }
             else{
               return db.collection('contacts').doc(sessionStorage.getItem('uid')).set({
-                'name': { email: "", chat: {} }
+                'list': {}
               })
             }
         })
@@ -178,7 +178,7 @@ window.addEventListener("DOMContentLoaded", () => {
             }
             else{
               return db.collection('contacts').doc(sessionStorage.getItem('uid')).set({
-                'name': { email: "", chat: {} }
+                'list': {}
               })
             }
         })
@@ -235,7 +235,7 @@ window.addEventListener("DOMContentLoaded", () => {
           }
           else{
             return db.collection('contacts').doc(sessionStorage.getItem('uid')).set({
-              'name': { email: "", chat: {} }
+              'list': {}
             })
           }
       })

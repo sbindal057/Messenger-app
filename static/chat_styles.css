@@ -1,4 +1,4 @@
-#messageBox {
+ #messageBox {
     z-index: 2;
     box-shadow: rgba(30, 30, 30, 0.75) 0px 0px 20px -2px;
     width: 65vw;
@@ -53,7 +53,7 @@ li {
     word-break: break-all;
     word-wrap: break-word;
     white-space: normal;
-    /* background-color: #E5E5f1; */
+    
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -120,7 +120,7 @@ li {
     animation: show 0.4s ease;
     transform: rotateY(180deg);
     -webkit-transform: rotateY(180deg);
-    /* padding-left: 10px; */
+   
     margin-left: 50px;
     margin-right: 50px;
     width: 500px;
@@ -359,8 +359,46 @@ li {
     color:lightgray;
   padding-left: 0.25rem;
   font-size: 12px;
-  /* justify-content: flex-end; */
+  
   position: absolute;
   right: 2px;
   }
+  
+
+  .container {
+    border: 2px solid #dedede;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+  }
+  
+  
+  .darker {
+    border-color: #ccc;
+    background-color: #ddd;
+  }
+  
+  
+  .container::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+  
+ 
+  
+  .time-right {
+    float: right;
+    color: #aaa;
+  }
+  
+
+  .time-left {
+    float: left;
+    color: #999;
+  } 
+  
+  
+
   

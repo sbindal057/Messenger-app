@@ -37,7 +37,7 @@ template.innerHTML = "uid: " + uid;
 
 
 
-document.body.appendChild(template);
+document.getElementById('ss').insertAdjacentElement('afterbegin',template);
 let html = ''
 
 db.settings({ timestampsInSnapshots: true });
@@ -51,16 +51,22 @@ db.collection('connections').doc(uid).get().then((doc) => {
 
             const li = `
             <li>
-            <button id = "${s.name}" style = "width:100%;background-color:#6264a7;" >${s.name}</button>
-            </li>
-            `
+         
+          <div>
+          <button id = "${s.name}" style = "width:100%;background-color:#6264a7;" >
+            ${s.name}
+            
+            </button>
+          </div>
+        </li>
+                `
 
-        html += li
-        namedict[s.name] = s.uid
-        namedict[s.uid] = s.name
-        const contactHTML = document.getElementById('contacts')
-        contactHTML.innerHTML = html
-        document.getElementById(s.name).addEventListener("click", function f() { try { hello(s.name) } catch { console.error(); } });
+            html += li
+            namedict[s.name] = s.uid
+            namedict[s.uid] = s.name
+            const contactHTML = document.getElementById('contacts')
+            contactHTML.innerHTML = html
+            document.getElementById(s.name).addEventListener("click", function f() { try { hello(s.name) } catch { console.error(); } });
         })
 
     }
@@ -72,27 +78,29 @@ function hello(data) {
     console.log('clicked')
     if (sessionStorage.getItem(data) == 'on') {
         console.log('on')
-
-        document.getElementById('messageBox').innerHTML = '';
+        document.getElementById('messageBox').style.display = 'none';
+        // document.getElementById('messageBox').innerHTML = '';
 
         sessionStorage.setItem(data, 'of')
         sessionStorage.setItem('senderuid', null)
-        document.getElementById('inputPlace').style.display = 'none'
+        // document.getElementById('inputPlace').style.display = 'none'
+    document.getElementById('chatter').innerHTML = ''
     }
 
     else {
-
+        
 
         sessionStorage.setItem(data, 'on')
 
         sessionStorage.setItem('senderuid', namedict[data])
         console.log('off')
-        const box = `<div class="messageArea" id="journal-scroll">        <div class=" " id="chatmsg">        </div>      </div>`
-        let b = ''
-        b += box
-        document.getElementById('inputPlace').style.display = 'flex'
-        document.getElementById('messageBox').innerHTML = b;
-
+        // const box = `<div class="messageArea" id="journal-scroll">        <div class=" " id="chatmsg">        </div>      </div>`
+        // let b = ''
+        // b += box
+        // document.getElementById('inputPlace').style.display = 'flex'
+        // document.getElementById('messageBox').innerHTML = b;
+        document.getElementById('messageBox').style.diplay = 'inline-block';
+        document.getElementById('chatter').innerHTML = data
 
 
         //printing prev message
@@ -103,7 +111,7 @@ function hello(data) {
             let mssgArray = doc.data().list[namedict[data]]
 
             console.log(mssgArray)
-            const ChatBox = document.getElementById("chatbox")
+            
             console.log(mssgArray)
             if (mssgArray != undefined) mssgArray.forEach(printPrevMessage)
         })
@@ -112,23 +120,25 @@ function hello(data) {
             let MSSG = item['mssg']
             let TIME = item['time']
             if (uid == NAME) {
-                var printtext = document.getElementById('chatmsg');
+                var printtext = document.getElementById('chat');
 
 
 
-                var printnow = '<div class="sent">' + '<span class=" sent1 " >' + '<span style="padding-right:22px">' + MSSG + '</span>' + '<span class="senttime" >' + TIME + '</span>' + '</span>' + '</div>';
+                var printnow = '<li class="me">'+'<div class="entete">'+'<h3>'+TIME+'</h3>'+'<h2>'+'Me'+'</h2>'+'<span class="status blue"></span>'+' </div>'+'<div class="triangle"></div><div class="message">'+MSSG+'</div></li>' //div claainer darker">'+'<p>'+MSSG+'</p>'+'<span class="time-left">'+TIME+'</span>'+'</div>'                // <div class="sent">' + '<span class=" sent1 " >' + '<span style="padding-right:22px">' + MSSG + '</span>' + '<span class="senttime" >' + TIME + '</span>' + '</span>' + '</div>';
 
                 printtext.insertAdjacentHTML('beforeend', printnow);
 
-                var box = document.getElementById('journal-scroll');
-                box.scrollTop = box.scrollHeight;
+                // var box = document.getElementById('journal-scroll');
+                // box.scrollTop = box.scrollHeight;
 
             }
             else {
 
-                var printtext = document.getElementById('chatmsg');
+                var printtext = document.getElementById('chat');
 
-                var printnow = '<div class="receive">' + '<div class=" receive1" >' + '<div class="receiveMessage">' + '<p class="message">' + MSSG + '</p>' + '</div>' + '<span class="time">' + TIME + '</span>' + '</div>' + '</div>';
+                var printnow ='<li class="you">'+'<div class="entete">'+'<span class="status green"></span>'+'<h2>'+namedict[NAME]+'</h2>'+'<h3>'+TIME+'</h3></div>'+'<div class="triangle"></div><div class="message">'+MSSG+'</div></li>'  
+                //'<div class="container">' +'<p>'+MSSG+'</p>'+'<span class="time-right">'+TIME+'</span>'+'</div>'
+                // <div class="receive">' + '<div class=" receive1" >' + '<div class="receiveMessage">' + '<p class="message">' + MSSG + '</p>' + '</div>' + '<span class="time">' + TIME + '</span>' + '</div>' + '</div>';
                 printtext.insertAdjacentHTML('beforeend', printnow);
 
                 var box = document.getElementById('journal-scroll');
@@ -176,7 +186,7 @@ if (document.getElementById('message') != null) {
 
         var copiedtext = copytext.value;
 
-        var printnow = '<div class="sent">' + '<span class=" sent1 " >' + '<span style="padding-right:22px">' + copiedtext + '</span>' + '<span class="senttime" >' + currentdate.getHours() + ':' + currentdate.getMinutes() + '</span>' + '</span>' + '</div>';
+        var printnow = '<li class="me">'+'<div class="entete">'+'<h3>'+currentdate.getHours() + ':' + currentdate.getMinutes()+'</h3>'+'<h2>'+'Me'+'</h2>'+'<span class="status blue"></span>'+' </div>'+'<div class="triangle"></div><div class="message">'+copiedtext+'</div></li>';
 
         printtext.insertAdjacentHTML('beforeend', printnow);
 
@@ -221,10 +231,10 @@ socket.on(uid, text => {
     console.log('recieved')
     if (sessionStorage.getItem('senderuid') == text.senderuid) {
         console.log('printing')
-        var printtext = document.getElementById('chatmsg');
+        var printtext = document.getElementById('chat');
 
 
-        var printnow = '<div class="receive">' + '<div class=" receive1" >' + '<div class="receiveMessage">' + '<p class="message">' + text.messagE + '</p>' + '</div>' + '<span class="time">' + currentdate.getHours() + ':' + currentdate.getMinutes() + '</span>' + '</div>' + '</div>';
+        var printnow ='<li class="you">'+'<div class="entete">'+'<span class="status green"></span>'+'<h2>'+namedict[text.senderuid]+'</h2>'+'<h3>'+currentdate.getHours() + ':' + currentdate.getMinutes()+'</h3></div>'+'<div class="triangle"></div><div class="message">'+text.messagE +'</div></li>'    ;
         printtext.insertAdjacentHTML('beforeend', printnow);
 
         var box = document.getElementById('journal-scroll');
