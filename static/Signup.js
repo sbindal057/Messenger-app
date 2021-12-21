@@ -18,8 +18,8 @@ document
     .getElementById("signup")
     .addEventListener("click", () => {
 
-        const login = document.getElementById("name");
-        const password = document.getElementById("callInput");
+        const login = document.getElementById("name").value;
+        const password = document.getElementById("callInput").value;
 
         firebase
             .auth()

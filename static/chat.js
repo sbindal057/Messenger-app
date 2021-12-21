@@ -30,16 +30,21 @@ const analytics = getAnalytics(app);
 
 
 const db = firebase.firestore()
-const template = document.createElement('div');
-template.style = "color:whitesmoke;z-index:10"
-template.innerHTML = "uid: " + uid;
 
 
 
 
-document.body.appendChild(template);
+
 let html = ''
 
+function CopyToClipboard() {
+    navigator.clipboard.writeText(uid).then(function() {
+        console.log('Async: Copying to clipboard was successful!');
+      }, function(err) {
+        console.error('Async: Could not copy text: ', err);
+      });
+  }
+  document.getElementById('uid').addEventListener('click',CopyToClipboard())
 db.settings({ timestampsInSnapshots: true });
 
 //opening a contact
@@ -51,16 +56,30 @@ db.collection('connections').doc(uid).get().then((doc) => {
 
             const li = `
             <li>
-            <button id = "${s.name}" style = "width:100%;background-color:#6264a7;" >${s.name}</button>
+            <button id=${s.name} class = "but">
+            <div role="gridcell" aria-colindex="2" class="top">
+            <div class="names">
+            ${s.name}          
+            </div>
+            <div class="times">
+            TIME
+            </div>
+            </div>
+            <br>
+            <div class="lastmessage">
+            Last message
+            </div>
+            
+            </button>
             </li>
             `
 
-        html += li
-        namedict[s.name] = s.uid
-        namedict[s.uid] = s.name
-        const contactHTML = document.getElementById('contacts')
-        contactHTML.innerHTML = html
-        document.getElementById(s.name).addEventListener("click", function f() { try { hello(s.name) } catch { console.error(); } });
+            html += li
+            namedict[s.name] = s.uid
+            namedict[s.uid] = s.name
+            const contactHTML = document.getElementById('contacts')
+            contactHTML.innerHTML = html
+            document.getElementById(s.name).addEventListener("click", function f() { try { hello(s.name) } catch { console.error(); } });
         })
 
     }
@@ -70,12 +89,12 @@ db.collection('connections').doc(uid).get().then((doc) => {
 })
 function hello(data) {
     console.log('clicked')
-    if (sessionStorage.getItem(data) == 'on') {
+    if (sessionStorage.getItem('senderuid') == data) {
         console.log('on')
 
         document.getElementById('messageBox').innerHTML = '';
 
-        sessionStorage.setItem(data, 'of')
+
         sessionStorage.setItem('senderuid', null)
         document.getElementById('inputPlace').style.display = 'none'
     }
@@ -83,7 +102,7 @@ function hello(data) {
     else {
 
 
-        sessionStorage.setItem(data, 'on')
+
 
         sessionStorage.setItem('senderuid', namedict[data])
         console.log('off')
@@ -116,7 +135,7 @@ function hello(data) {
 
 
 
-                var printnow = '<div class="sent">' + '<span class=" sent1 " >' + '<span style="padding-right:22px">' + MSSG + '</span>' + '<span class="senttime" >' + TIME + '</span>' + '</span>' + '</div>';
+                var printnow = '<div class="sent">' + '<span class=" sent1 " >' + '<span style="padding-right:22px;  margin: 0px 10px; font-size:medium;">' + MSSG + '</span>' + '<span class="senttime" >' + TIME + '</span>' + '</span>' + '</div>';
 
                 printtext.insertAdjacentHTML('beforeend', printnow);
 
@@ -176,7 +195,7 @@ if (document.getElementById('message') != null) {
 
         var copiedtext = copytext.value;
 
-        var printnow = '<div class="sent">' + '<span class=" sent1 " >' + '<span style="padding-right:22px">' + copiedtext + '</span>' + '<span class="senttime" >' + currentdate.getHours() + ':' + currentdate.getMinutes() + '</span>' + '</span>' + '</div>';
+        var printnow = '<div class="sent">' + '<span class=" sent1 " >' + '<span style="padding-right:22px; margin: 0px 10px; font-size:medium;">' + copiedtext + '</span>' + '<span class="senttime" >' + currentdate.getHours() + ':' + currentdate.getMinutes() + '</span>' + '</span>' + '</div>';
 
         printtext.insertAdjacentHTML('beforeend', printnow);
 
@@ -184,7 +203,7 @@ if (document.getElementById('message') != null) {
         bb.scrollTop = bb.scrollHeight;
 
         db.collection('contacts').doc(uid).get().then((doc) => {
-            
+
             let l = doc.data().list
 
 
@@ -195,7 +214,7 @@ if (document.getElementById('message') != null) {
 
 
             })
-            
+
             db.collection('contacts').doc(uid).update({
 
                 list: l
@@ -240,7 +259,7 @@ socket.on(uid, text => {
     }
 
     firebase.firestore().collection('contacts').doc(uid).get().then((doc) => {
-        
+
         let l = doc.data().list
 
 
@@ -251,7 +270,7 @@ socket.on(uid, text => {
 
 
         })
-        
+
         firebase.firestore().collection('contacts').doc(uid).update({
 
             list: l
@@ -269,7 +288,7 @@ socket.on(uid, text => {
 // add contact
 const closemodal = document.getElementById("enter")
 closemodal.onclick = () => {
-    sessionStorage.getItem(document.getElementById("names").value, 0)
+    // sessionStorage.getItem(document.getElementById("names").value, 0)
 
     //add in connection database
     contactss.push({ 'name': document.getElementById("names").value, 'uid': document.getElementById("uid").value })
@@ -278,23 +297,37 @@ closemodal.onclick = () => {
     })
 
     db.collection('contacts').doc(uid).get().then((doc) => {
-       
 
-        let k =  doc.data().list
 
-        
+        let k = doc.data().list
+
+
         k[document.getElementById("uid").value] = []
-        
+
         console.log(k)
         db.collection('contacts').doc(uid).update({
-            
+
             list: k
         })
     })
     const li = `
-                <li>
-                <button id = "${document.getElementById("names").value}" style = "width:100%;background-color:#6264a7;" >${document.getElementById("names").value}</button>
-                </li>
+    <li>
+    <button id=${document.getElementById("names").value} class = "but">
+    <div role="gridcell" aria-colindex="2" class="top">
+    <div class="names">
+    ${document.getElementById("names").value}          
+    </div>
+    <div class="times">
+    TIME
+    </div>
+    </div>
+    <br>
+    <div class="lastmessage">
+    Last message
+    </div>
+    
+    </button>
+    </li>
                 `
 
     html += li
