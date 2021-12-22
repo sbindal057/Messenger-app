@@ -58,7 +58,7 @@ db.collection('connections').doc(uid).get().then((doc) => {
             <div class="names">
             ${s.name}          
             </div>
-            <div id="times">
+            <div class="times">
             ${ms['time']}
             </div>
             </div>
@@ -338,7 +338,7 @@ closemodal.onclick = () => {
         + '<div class="names">'
         + document.getElementById("names").value          
         + '</div>'
-        + '<div id="times">'
+        + '<div class="times">'
         + ''
         + '</div>'
         + '</div>'

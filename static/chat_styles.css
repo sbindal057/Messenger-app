@@ -27,7 +27,7 @@
     font-size: 100%;
     color: rgba(241,241,242,0.92);
   }
-  #times{
+  .times{
     position: absolute;
     right: 5px;
     font-size: 15px;
@@ -37,7 +37,7 @@
     margin-top: 10px;
     font-size: 12px;
   }
-  #lastmessage{
+  .lastmessage{
     font-size: 14px;
     font-weight: 400;
     color: rgba(241,241,242,0.8);
