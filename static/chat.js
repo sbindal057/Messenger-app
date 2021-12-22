@@ -45,35 +45,58 @@ db.collection('connections').doc(uid).get().then((doc) => {
     if (doc.exists) {
         contactss = doc.data().name
         console.log(doc.data().name)
+        let html = ''
+        let lii = []
         doc.data().name.forEach(s => {
+            db.collection('contacts').doc(uid).get().then((docs) => {
 
-            const li = `
+                function con(ms) {
+                    const li = `
             <li>
             <button id=${s.name} class = "but">
             <div role="gridcell" aria-colindex="2" class="top">
             <div class="names">
             ${s.name}          
             </div>
-            <div class="times">
-            TIME
+            <div id="times">
+            ${ms['time']}
             </div>
             </div>
             
             <div class="lastmessage">
-            Last message
+            ${ms['mssg']}
             </div>
             
             </button>
             </li>
             `
 
-            html += li
-            console.log(s.name)
-            namedict[s.name] = s.uid
-            namedict[s.uid] = s.name
-            const contactHTML = document.getElementById('contacts')
-            contactHTML.innerHTML = html
-            document.getElementById(s.name).addEventListener("click", function f() { try { hello(s.name) } catch { console.error(); } });
+                    html += li
+                    console.log(s.name)
+                    namedict[s.name] = s.uid
+                    namedict[s.uid] = s.name
+                    lii.push(s.name)
+
+
+
+                }
+                const contactHTML = document.getElementById('contacts')
+                contactHTML.innerHTML = html
+                lii.forEach(sss => {
+                    document.getElementById(sss).addEventListener("click", function f() { try { hello(sss) } catch { console.error(); } });
+                })
+                // console.log(namedict[s.name])
+                console.log(docs.data().list[s.uid])
+                if (docs.data().list[s.uid].at(-1) != undefined) {
+                    console.log(docs.data().list[s.uid].at(-1))
+                    let ms = docs.data().list[s.uid].at(-1)
+                    con(ms)
+                }
+                else {
+                    let ms = { 'mssg': '', 'time': '', }
+                    con(ms)
+                }
+            })
         })
 
     }
@@ -83,70 +106,70 @@ db.collection('connections').doc(uid).get().then((doc) => {
 })
 function hello(data) {
     console.log('clicked')
-    if (sessionStorage.getItem('senderuid') != data)  {
+    // if (sessionStorage.getItem('senderuid') != data)  {
 
 
 
 
-        sessionStorage.setItem('senderuid', namedict[data])
-        console.log('off')
-        const box = `<div class="messageArea" id="journal-scroll"> 
+    sessionStorage.setItem('senderuid', namedict[data])
+    // console.log('off')
+    const box = `<div class="messageArea" id="journal-scroll"> 
         <div id = "topname"></div>
                <div class=" " id="chatmsg"style="position: relative;top: 9vh;"> 
                       </div> 
                            </div>`
-        let b = ''
-        b += box
-        console.log(data)
-        document.getElementById('inputPlace').style.display = 'flex'
-        document.getElementById('messageBox').innerHTML = b;
-        document.getElementById('topname').innerHTML = data;
+    let b = ''
+    b += box
+    console.log(data)
+    document.getElementById('inputPlace').style.display = 'flex'
+    document.getElementById('messageBox').innerHTML = b;
+    document.getElementById('topname').innerHTML = data;
 
 
 
-        //printing prev message
+    //printing prev message
 
 
-        db.collection('contacts').doc(uid).get().then((doc) => {
+    db.collection('contacts').doc(uid).get().then((doc) => {
 
-            let mssgArray = doc.data().list[namedict[data]]
+        let mssgArray = doc.data().list[namedict[data]]
 
-            console.log(mssgArray)
-            const ChatBox = document.getElementById("chatbox")
-            console.log(mssgArray)
-            if (mssgArray != undefined) mssgArray.forEach(printPrevMessage)
-        })
-        function printPrevMessage(item) {
-            let NAME = item['uid']
-            let MSSG = item['mssg']
-            let TIME = item['time']
-            if (uid == NAME) {
-                var printtext = document.getElementById('chatmsg');
+        console.log(mssgArray)
+        const ChatBox = document.getElementById("chatbox")
+        console.log(mssgArray)
+        if (mssgArray != undefined) mssgArray.forEach(printPrevMessage)
+    })
+    function printPrevMessage(item) {
+        let NAME = item['uid']
+        let MSSG = item['mssg']
+        let TIME = item['time']
+        if (uid == NAME) {
+            var printtext = document.getElementById('chatmsg');
 
 
 
-                var printnow = '<div class="sent">' + '<span class=" sent1 " >' + '<span class="mm">' + MSSG + '</span>' + '<span class="senttime" >' + TIME + '</span>' + '</span>' + '</div>';
+            var printnow = '<div class="sent">' + '<span class=" sent1 " >' + '<span class="mm">' + MSSG + '</span>' + '<span class="senttime" >' + TIME + '</span>' + '</span>' + '</div>';
 
-                printtext.insertAdjacentHTML('beforeend', printnow);
+            printtext.insertAdjacentHTML('beforeend', printnow);
 
-                var box = document.getElementById('journal-scroll');
-                box.scrollTop = box.scrollHeight;
+            var box = document.getElementById('journal-scroll');
+            box.scrollTop = box.scrollHeight;
 
-            }
-            else {
-
-                var printtext = document.getElementById('chatmsg');
-
-                var printnow = '<div class="receive">' + '<div class=" receive1" >' + '<div class="receiveMessage">' + '<p class="message">' + MSSG + '</p>' + '</div>' + '<span class="time">' + TIME + '</span>' + '</div>' + '</div>';
-                printtext.insertAdjacentHTML('beforeend', printnow);
-
-                var box = document.getElementById('journal-scroll');
-                box.scrollTop = box.scrollHeight;
-
-            }
         }
+        else {
 
+            var printtext = document.getElementById('chatmsg');
+
+            var printnow = '<div class="receive">' + '<div class=" receive1" >' + '<div class="receiveMessage">' + '<p class="message">' + MSSG + '</p>' + '</div>' + '<span class="time">' + TIME + '</span>' + '</div>' + '</div>';
+            printtext.insertAdjacentHTML('beforeend', printnow);
+
+            var box = document.getElementById('journal-scroll');
+            box.scrollTop = box.scrollHeight;
+
+        }
     }
+
+    // }
 }
 //sending message\
 console.log("ss")
@@ -213,6 +236,14 @@ if (document.getElementById('message') != null) {
         })
 
 
+
+        document.getElementById(namedict[sessionStorage.getItem('senderuid')]).getElementsByClassName("lastmessage")[0].textContent = copiedtext
+        document.getElementById(namedict[sessionStorage.getItem('senderuid')]).getElementsByClassName("times")[0].textContent = currentdate.getHours() + ':' + currentdate.getMinutes()
+
+        // console.log(namedict[s.name])
+
+
+
         copytext.value = "";
     }
 
@@ -228,6 +259,8 @@ if (document.getElementById('message') != null) {
 socket.on(uid, text => {
     var currentdate = new Date();
     console.log('recieved')
+    document.getElementById(namedict[sessionStorage.getItem('senderuid')]).getElementsByClassName("lastmessage")[0].textContent = text.messagE
+    document.getElementById(namedict[sessionStorage.getItem('senderuid')]).getElementsByClassName("times")[0].textContent = currentdate.getHours() + ':' + currentdate.getMinutes()
     if (sessionStorage.getItem('senderuid') == text.senderuid) {
         console.log('printing')
         var printtext = document.getElementById('chatmsg');
@@ -300,30 +333,29 @@ closemodal.onclick = () => {
             list: k
         })
     })
-    const li = `
-    <li>
-    <button id=${document.getElementById("names").value} class = "but">
-    <div role="gridcell" aria-colindex="2" class="top">
-    <div class="names">
-    ${document.getElementById("names").value}          
-    </div>
-    <div class="times">
-    TIME
-    </div>
-    </div>
-    
-    <div class="lastmessage">
-    Last message
-    </div>
-    
-    </button>
-    </li>
-                `
+    const li = '<li>' + '<button id='+document.getElementById("names").value +' class = "but">'
+        + '<div role="gridcell" aria-colindex="2" class="top">'
+        + '<div class="names">'
+        + document.getElementById("names").value          
+        + '</div>'
+        + '<div id="times">'
+        + ''
+        + '</div>'
+        + '</div>'
 
-    html += li
+        + '<div class="lastmessage">'
+        + ''
+        + '</div>'
+
+        + '</button>'
+        + '</li>'
+            
+    
+
+   
 
     const contactHTML = document.getElementById('contacts')
-    contactHTML.innerHTML = html
+    contactHTML.insertAdjacentHTML( 'beforeend', li );
     document.getElementById(document.getElementById("names").value).addEventListener("click", function f() { try { hello(document.getElementById("names").value) } catch { console.error(); } });
     namedict[document.getElementById("names").value] = document.getElementById("uid").value
     namedict[document.getElementById("uid").value] = document.getElementById("names").value
