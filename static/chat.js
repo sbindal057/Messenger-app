@@ -1,5 +1,5 @@
 const socket = io('/')
-let uid = sessionStorage.getItem('uid')
+let uid = sessionStorage.getItem('user')
 var l = {}
 var c = []
 let namedict = {}
@@ -29,6 +29,7 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 
 
+
 const db = firebase.firestore()
 
 
@@ -37,14 +38,6 @@ const db = firebase.firestore()
 
 let html = ''
 
-function CopyToClipboard() {
-    navigator.clipboard.writeText(uid).then(function() {
-        console.log('Async: Copying to clipboard was successful!');
-      }, function(err) {
-        console.error('Async: Could not copy text: ', err);
-      });
-  }
-  document.getElementById('uid').addEventListener('click',CopyToClipboard())
 db.settings({ timestampsInSnapshots: true });
 
 //opening a contact
@@ -65,7 +58,7 @@ db.collection('connections').doc(uid).get().then((doc) => {
             TIME
             </div>
             </div>
-            <br>
+            
             <div class="lastmessage">
             Last message
             </div>
@@ -75,6 +68,7 @@ db.collection('connections').doc(uid).get().then((doc) => {
             `
 
             html += li
+            console.log(s.name)
             namedict[s.name] = s.uid
             namedict[s.uid] = s.name
             const contactHTML = document.getElementById('contacts')
@@ -89,28 +83,24 @@ db.collection('connections').doc(uid).get().then((doc) => {
 })
 function hello(data) {
     console.log('clicked')
-    if (sessionStorage.getItem('senderuid') == data) {
-        console.log('on')
-
-        document.getElementById('messageBox').innerHTML = '';
-
-
-        sessionStorage.setItem('senderuid', null)
-        document.getElementById('inputPlace').style.display = 'none'
-    }
-
-    else {
+    if (sessionStorage.getItem('senderuid') != data)  {
 
 
 
 
         sessionStorage.setItem('senderuid', namedict[data])
         console.log('off')
-        const box = `<div class="messageArea" id="journal-scroll">        <div class=" " id="chatmsg">        </div>      </div>`
+        const box = `<div class="messageArea" id="journal-scroll"> 
+        <div id = "topname"></div>
+               <div class=" " id="chatmsg"style="position: relative;top: 9vh;"> 
+                      </div> 
+                           </div>`
         let b = ''
         b += box
+        console.log(data)
         document.getElementById('inputPlace').style.display = 'flex'
         document.getElementById('messageBox').innerHTML = b;
+        document.getElementById('topname').innerHTML = data;
 
 
 
@@ -135,7 +125,7 @@ function hello(data) {
 
 
 
-                var printnow = '<div class="sent">' + '<span class=" sent1 " >' + '<span style="padding-right:22px;  margin: 0px 10px; font-size:medium;">' + MSSG + '</span>' + '<span class="senttime" >' + TIME + '</span>' + '</span>' + '</div>';
+                var printnow = '<div class="sent">' + '<span class=" sent1 " >' + '<span class="mm">' + MSSG + '</span>' + '<span class="senttime" >' + TIME + '</span>' + '</span>' + '</div>';
 
                 printtext.insertAdjacentHTML('beforeend', printnow);
 
@@ -321,7 +311,7 @@ closemodal.onclick = () => {
     TIME
     </div>
     </div>
-    <br>
+    
     <div class="lastmessage">
     Last message
     </div>

@@ -1,13 +1,14 @@
  #messageBox {
-    z-index: 2;
-    box-shadow: rgba(30, 30, 30, 0.75) 0px 0px 20px -2px;
-    width: 65vw;
-    height: 100vh;
-    position: absolute;
-    right: 20px;
-    top: 0px;
-    background-color: #1B1A1A;
-  }
+  z-index: 2;
+  box-shadow: rgb(30 30 30 / 75%) 0px 0px 20px -2px;
+  width: 67.5vw;
+  height: 100vh;
+  position: absolute;
+  right: 20px;
+  bottom: 0px;
+  background-color: #0d1418;    
+    
+}
   #addContact{
     background-color: whitesmoke;
     
@@ -22,39 +23,53 @@
     margin: 0px 10px 0px 10px;
   }
   .names{
-    color: whitesmoke;
-    font-size: large;
-    font-weight: 600;
+    font: inherit;
+    font-size: 100%;
+    color: rgba(241,241,242,0.92);
   }
   .times{
-    font-size: 15px;
-    font-weight: 600;
-    color: #d0d0d0;
     position: absolute;
-    right: 0px;
+    right: 5px;
+    font-size: 15px;
+    color: rgba(241,241,242,0.63);
+    margin-left: 20vw;
     top: 20px;
+    margin-top: 10px;
+    font-size: 12px;
   }
-  
+  .lastmessage{
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(241,241,242,0.8);
+  }
   .but{
     width: 100%;
-    background-color: #6264a7;
+    background-color: #131c21;
     position: relative;
     display: flex;
     flex-direction: column;
     height: 75px;
     pointer-events: all;
     padding: 0px 20px 5px 10px;
+    border-block-color: grey;
+    border-bottom-width: 1px;
+    border-bottom-left-radius: revert;
+  }
+  li{
+    color: white;
+    background-color: #131c21;
+    margin: 3px;
   }
   .contacts{
     z-index: 2;
     box-shadow: rgb(30 30 30 / 75%) 0px 0px 20px -2px;
     width: 30vw;
-    height: 93vh;
+    height: 90vh;
     position: absolute;
     left: 10px;
     bottom: 0px;
-    background-color: #1B1A1A;
-    overflow:auto;
+    background-color: #131c21;
+    overflow: auto;
 
 
   }
@@ -65,7 +80,7 @@
     padding-right: 0.25rem;
     padding-top: 1.25rem;
     padding-bottom: 0.25rem;
-    height: 90vh;
+    height: 100vh;
 
   }
 li {
@@ -78,6 +93,12 @@ li {
       
 
     font-size: 15px;
+    display: flex;
+    z-index: 100;
+    width: 65vw;
+    position: absolute;
+    right: 20px;
+    bottom: 10px;
 
     height: auto;
     word-break: break-all;
@@ -91,17 +112,52 @@ li {
     padding: 0.25rem 1rem;
 
   }
+#mee{
+  z-index: 2;
+  box-shadow: rgb(30 30 30 / 75%) 0px 0px 20px -2px;
+  width: 30vw;
+  height: 10vh;
+  position: absolute;
+  left: 10px;
+  top: 0px;
+  background-color: #2a2f32;
+  /* overflow: auto; */
+  padding: 10px 16px;
+  color: rgba(241,241,242,0.92);
+  font-size: 25px;
+  /* padding-right: 20px; */
+  font-weight: 600;
+  align-items: center;
+}
+#topname{
+  z-index: 2;
+    box-shadow: rgb(30 30 30 / 75%) 0px 0px 20px -2px;
+    width: 67.5vw;
+    height: 10vh;
+    position: absolute;
+    /* left: 32.5; */
+    top: 0px;
+    background-color: #2a2f32;
+    /* overflow: auto; */
+    padding: 10px 16px;
+    color: rgba(241,241,242,0.92);
+    font-size: 25px;
+    /* padding-right: 20px; */
+    font-weight: 600;
+    align-items: center;
+}
 
   #typemsg {
-    border-radius: 0.25rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    color: black;
+    
+    color: #f1f1f2;
     height: auto;
     width: 100%;
-    margin-right: 1rem;
+    
+    padding: 9px 12px 11px;
+    margin: 5px 10px;
+    background-color: #33383b;
+    border: 1px solid #33383b;
+    border-radius: 21px;
   }
 
   #typemsg::placeholder {
@@ -332,7 +388,7 @@ li {
     padding-right: 0.5rem;
   }
   .receive1{
-    background-color: whitesmoke;
+    background-color: #262d31;
     height: auto;
     border-radius: 0.125rem;
     padding-left: 0.25rem;
@@ -342,30 +398,47 @@ li {
     overflow: hidden;
     max-width: 40rem;
     width: auto;
-    position:relative;
+    position: relative;
+    border-radius: 7.5px;
+    position: relative;
+    flex: none;
+    font-size: 14.2px;
+    line-height: 19px;
+    box-shadow: 0 1px 0.5px rgb(0 0 0 / 13%);
+    color: rgba(241,241,242,0.95);
 
   }
+  .mm
+  {
+    padding-right: 22px;
+    margin: 0px 10px;
+    font-size: medium;
+  }
   .sent1{
-    background-color: #6264a7;
+    background-color: #056162;
+    box-shadow: 0 1px 0.5px rgba(var(--shadow-rgb),.13);
     height: auto;
     border-radius: 0.125rem;
     padding: 0.25rem;
-  
     align-items: flex-end;
     display: flex;
     overflow: hidden;
     max-width: 40rem;
-    width:auto;
+    width: auto;
     font-size: 13px;
     word-break: break-all;
     justify-content: end;
+    border-radius: 7.5px;
     color: whitesmoke;
     position: relative;
+    padding: 6px 7px 8px 9px;
 
   }
   .receiveMessage{
     flex-direction: column;
     align-items: flex-start;
+    padding: 6px 7px 8px 9px;
+    box-sizing: border-box;
   }
   .name{
     padding-left: 0.25rem;
@@ -374,20 +447,31 @@ li {
     color: #6264a7;
   }
   .message{
-    color: black;
-    padding-left: 0.25rem;
+    
     text-overflow: clip;
     width: auto;
-    font-size: 13px;
+    
     word-break: break-all;
     padding-right: 20px;
   }
+  .top{
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+    font-weight: 400;
+  }
   .time{
-    color: gray;
+    color: rgba(241,241,242,0.63);
     padding-left: 0.25rem;
     position: absolute;
-    right:2px;
+    right: 2px;
     font-size: 12px;
+    float: right;
+    height: 15px;
+    font-size: 11px;
+    white-space: nowrap;
+    line-height: 15px;
+    margin: -10px 1px 0px 4px;
   }
   .senttime{
     color:lightgray;

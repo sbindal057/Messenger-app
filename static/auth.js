@@ -32,12 +32,13 @@ window.addEventListener("DOMContentLoaded", () => {
         auth().
         signInWithPopup(provider)
 
-        .then(({ user }) => {
-          sessionStorage.setItem('uid', user.uid)
+        .then((result) => {
+          sessionStorage.setItem('uid', result.user.uid)
+          sessionStorage.setItem('user',result.user.email)
           // sessionStorage.setItem('email',user.email)
 
 
-          return user.getIdToken().then((idToken) => {
+          return result.user.getIdToken().then((idToken) => {
             return fetch("/sessionLogin", {
               method: "POST",
               headers: {
@@ -50,24 +51,24 @@ window.addEventListener("DOMContentLoaded", () => {
           });
         })
         .then(() => {
-          db.collection('contacts').doc(sessionStorage.getItem('uid')).get().then((doc) => {
+          db.collection('contacts').doc(sessionStorage.getItem('user')).get().then((doc) => {
             if (doc.exists) {
                 console.log("Document data:", doc);
             }
             else{
-              return db.collection('contacts').doc(sessionStorage.getItem('uid')).set({
+              return db.collection('contacts').doc(sessionStorage.getItem('user')).set({
                 'list': {}
               })
             }
         })
         })
         .then(() => {
-          db.collection('connections').doc(sessionStorage.getItem('uid')).get().then((doc) => {
+          db.collection('connections').doc(sessionStorage.getItem('user')).get().then((doc) => {
             if (doc.exists) {
                 console.log("Document data:", doc);
             }
             else{
-              return db.collection('connections').doc(sessionStorage.getItem('uid')).set({
+              return db.collection('connections').doc(sessionStorage.getItem('user')).set({
                 'name': []
               })
             }
