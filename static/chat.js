@@ -272,14 +272,14 @@ socket.on(uid, text => {
         var box = document.getElementById('journal-scroll');
         box.scrollTop = box.scrollHeight;
     }
-    else {
+    // else {
 
-        console.log("notif")
+    //     console.log("notif")
 
-        document.body.insertAdjacentHTML('beforeend', '<div class="receive" id = "messagePopup"style = "position:absolute;right:calc(50% - 10rem);z-index:100;">' + '<div class="receive1" >' + '<div class="receiveMessage">' + '<p class="name">' + namedict[text.senderuid] + '</p>' + '<p class="message">' + text.messagE + '</p>' + '</div>' + '<span class="time">' + currentdate.getHours() + ':' + currentdate.getMinutes() + '</span>' + '</div>' + '</div>');
+    //     document.body.insertAdjacentHTML('beforeend', '<div class="receive" id = "messagePopup"style = "position:absolute;right:calc(50% - 10rem);z-index:100;">' + '<div class="receive1" >' + '<div class="receiveMessage">' + '<p class="name">' + namedict[text.senderuid] + '</p>' + '<p class="message">' + text.messagE + '</p>' + '</div>' + '<span class="time">' + currentdate.getHours() + ':' + currentdate.getMinutes() + '</span>' + '</div>' + '</div>');
 
-        setTimeout(function () { document.getElementById("messagePopup").remove() }, 3000);
-    }
+    //     setTimeout(function () { document.getElementById("messagePopup").remove() }, 3000);
+    // }
 
     firebase.firestore().collection('contacts').doc(uid).get().then((doc) => {
 
