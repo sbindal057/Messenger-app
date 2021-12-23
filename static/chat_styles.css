@@ -60,7 +60,7 @@
     background-color: #131c21;
     position: relative;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     height: 75px;
     pointer-events: all;
     padding: 0px 20px 5px 10px;
@@ -141,6 +141,20 @@ li {
   /* padding-right: 20px; */
   font-weight: 400;
   align-items: center;
+  display: flex;
+}
+.imagestyle{
+  width: 4vw;
+  height: 4vw;
+  border-radius: 20vw;
+  margin-right: 2vw;
+}
+.imagestylecont{
+  width: 4.5vw;
+  height: 4.5vw;
+  border-radius: 20vw;
+  margin-right: 2vw;
+  margin-top: 1vh;
 }
 #topname{
   z-index: 2;
@@ -158,6 +172,7 @@ li {
     /* padding-right: 20px; */
     font-weight: 400;
     align-items: center;
+    display: flex;
 }
 
   #typemsg {

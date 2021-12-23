@@ -54,6 +54,8 @@ db.collection('connections').doc(uid).get().then((doc) => {
                     const li = `
             <li>
             <button id=${s.name} class = "but">
+            <img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/The_Friends_Stage.jpg/1280px-The_Friends_Stage.jpg" class = "imagestylecont">
+            <div style = "display:flex; flex-direction:column">
             <div role="gridcell" aria-colindex="2" class="top">
             <div class="names">
             ${s.name}          
@@ -66,7 +68,7 @@ db.collection('connections').doc(uid).get().then((doc) => {
             <div class="lastmessage">
             ${ms['mssg']}
             </div>
-            
+            </div>
             </button>
             </li>
             `
@@ -123,7 +125,7 @@ function hello(data) {
     console.log(data)
     document.getElementById('inputPlace').style.display = 'flex'
     document.getElementById('messageBox').innerHTML = b;
-    document.getElementById('topname').innerHTML = data;
+    document.getElementById('topname').innerHTML = '<img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/The_Friends_Stage.jpg/1280px-The_Friends_Stage.jpg" class = "imagestyle">'+data;
 
 
 
@@ -333,8 +335,9 @@ closemodal.onclick = () => {
             list: k
         })
     })
-    const li = '<li>' + '<button id='+document.getElementById("names").value +' class = "but">'
-        + '<div role="gridcell" aria-colindex="2" class="top">'
+    const li = '<li>' + '<button id='+document.getElementById("names").value +' class = "but"><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/The_Friends_Stage.jpg/1280px-The_Friends_Stage.jpg" class = "imagestylecont">'
+        + '<div style = "display:flex; flex-direction:column">'
+        +'<div role="gridcell" aria-colindex="2" class="top">'
         + '<div class="names">'
         + document.getElementById("names").value          
         + '</div>'
@@ -346,7 +349,7 @@ closemodal.onclick = () => {
         + '<div class="lastmessage">'
         + ''
         + '</div>'
-
+        +'</div>'
         + '</button>'
         + '</li>'
             
