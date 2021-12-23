@@ -15,8 +15,9 @@
 .welcome {
     font-size: 1.875rem;
     line-height: 2.25rem;
-    font-weight: 700;
-    color: whitesmoke;
+    font-weight: 640;
+    color: #128C7E;
+    margin-right: 12vw;
 }
 
 .div3 {

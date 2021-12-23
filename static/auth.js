@@ -18,7 +18,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE);
 
- 
+
 
 
 
@@ -33,10 +33,11 @@ window.addEventListener("DOMContentLoaded", () => {
         signInWithPopup(provider)
 
         .then((result) => {
-          sessionStorage.setItem('uid', result.user.uid)
-          sessionStorage.setItem('user',result.user.email)
-          // sessionStorage.setItem('email',user.email)
 
+          sessionStorage.setItem('uid', result.user.uid)
+          sessionStorage.setItem('user', result.user.email)
+          sessionStorage.setItem('username', result.user.displayName)
+          sessionStorage.setItem('photo', result.user.photoURL)
 
           return result.user.getIdToken().then((idToken) => {
             return fetch("/sessionLogin", {
@@ -51,28 +52,52 @@ window.addEventListener("DOMContentLoaded", () => {
           });
         })
         .then(() => {
+          db.collection('logins').doc('namelist').get().then((doc) => {
+            let l = doc.data().listt
+            let kk = 0
+            l.forEach(element => {
+              if(element.email == sessionStorage.getItem('user'))kk = 1
+            });
+            if(kk==0){
+            l.push(
+              {
+                'name': sessionStorage.getItem('username'),
+                'email': sessionStorage.getItem('user'),
+                'photo': sessionStorage.getItem('photo')
+              }
+            )
+            db.collection('logins').doc('namelist').update({
+
+              listt: l
+
+          })
+        }
+          })
+
+        })
+        .then(() => {
           db.collection('contacts').doc(sessionStorage.getItem('user')).get().then((doc) => {
             if (doc.exists) {
-                console.log("Document data:", doc);
+              console.log("Document data:", doc);
             }
-            else{
+            else {
               return db.collection('contacts').doc(sessionStorage.getItem('user')).set({
                 'list': {}
               })
             }
-        })
+          })
         })
         .then(() => {
           db.collection('connections').doc(sessionStorage.getItem('user')).get().then((doc) => {
             if (doc.exists) {
-                console.log("Document data:", doc);
+              console.log("Document data:", doc);
             }
-            else{
+            else {
               return db.collection('connections').doc(sessionStorage.getItem('user')).set({
                 'name': []
               })
             }
-        })
+          })
         })
         .then(() => {
           return firebase.auth().signOut();
@@ -84,4 +109,4 @@ window.addEventListener("DOMContentLoaded", () => {
 
     });
 
-  })
+})
