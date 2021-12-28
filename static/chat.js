@@ -147,17 +147,18 @@ db.collection('logins').doc('namelist').onSnapshot((doc) => {
             console.log(namedict[s.email])
             namedict[s.name+'photo'] = s.photo
             lii.push(s.name)
+            // const contactHTML = document.getElementById('allcontacts')
             const contactHTML = document.getElementById('contacts')
             contactHTML.innerHTML = html
         }
 
         // console.log(namedict[s.name])
-
+        contactss.sort((a, b) => a.name.localeCompare(b.name))
         contactss.forEach(s => {
-            db.collection('contacts').doc(uid).get().then((doc) => {
+            db.collection('contacts').doc(uid).get().then((docss) => {
 
 
-                let k = doc.data().list
+                let k = docss.data().list
         
                 if(k[s.email]==undefined){
                 k[s.email] = []}
@@ -476,10 +477,11 @@ socket.on(uid, text => {
 
 // openmodal.onclick = () => {
 //     room_id.style.display = "flex";
+//     console.log('ssssssss')
 
 // }
 
-// // })
+// })
 
 
 

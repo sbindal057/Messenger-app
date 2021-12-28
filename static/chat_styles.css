@@ -92,6 +92,19 @@
 
 
   }
+  .allcontacts{
+    z-index: 2;
+    box-shadow: rgb(30 30 30 / 75%) 0px 0px 20px -2px;
+    width: 30vw;
+    height: 90vh;
+    position: absolute;
+    left: 35vw;
+    bottom: 5vh;
+    background-color: #131c21;
+    overflow: auto;
+
+
+  }
 
   .messageArea {
     overflow: auto;
@@ -298,7 +311,7 @@ li {
   width: 35px;
   z-index: 1;
   fill: white;
-  background-color: #1B1A1A;
+  /* background-color: #1B1A1A; */
   transition: all 0.2s ease;
   box-shadow: rgba(30, 30, 30, 0.75) 0px 0px 20px -2px;
 
