@@ -106,9 +106,10 @@ db.settings({ timestampsInSnapshots: true });
 //         console.log("no doc")
 //     }
 // })
-db.collection('logins').doc('namelist').get().then((doc) => {
+db.collection('logins').doc('namelist').onSnapshot((doc) => {
 
     contactss = doc.data().listt
+    console.log(contactss)
     let html = ''
     let lii = []
 
@@ -143,6 +144,7 @@ db.collection('logins').doc('namelist').get().then((doc) => {
             console.log(s.name)
             namedict[s.name] = s.email
             namedict[s.email] = s.name.split(" ")[0]
+            console.log(namedict[s.email])
             namedict[s.name+'photo'] = s.photo
             lii.push(s.name)
             const contactHTML = document.getElementById('contacts')
@@ -354,8 +356,7 @@ if (document.getElementById('message') != null) {
 socket.on(uid, text => {
     var currentdate = new Date();
     console.log('recieved')
-    document.getElementById(namedict[sessionStorage.getItem('senderuid')]).getElementsByClassName("lastmessage")[0].textContent = text.messagE
-    document.getElementById(namedict[sessionStorage.getItem('senderuid')]).getElementsByClassName("times")[0].textContent = ('0' + currentdate.getHours()).slice(-2)+ ':' + ('0' + currentdate.getMinutes()).slice(-2)
+    
     if (sessionStorage.getItem('senderuid') == text.senderuid) {
         console.log('printing')
         var printtext = document.getElementById('chatmsg');
@@ -367,6 +368,8 @@ socket.on(uid, text => {
         var box = document.getElementById('journal-scroll');
         box.scrollTop = box.scrollHeight;
     }
+    document.getElementById(namedict[sessionStorage.getItem('senderuid')]).getElementsByClassName("lastmessage")[0].textContent = text.messagE
+    document.getElementById(namedict[sessionStorage.getItem('senderuid')]).getElementsByClassName("times")[0].textContent = ('0' + currentdate.getHours()).slice(-2)+ ':' + ('0' + currentdate.getMinutes()).slice(-2)
     // else {
 
     //     console.log("notif")

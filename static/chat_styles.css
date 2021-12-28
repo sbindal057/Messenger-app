@@ -37,7 +37,7 @@
   }
   .names{
     font: inherit;
-    font-size: 100%;
+    font-size: 105%;
     color: rgba(241,241,242,0.92);
   }
   .times{
@@ -54,6 +54,12 @@
     font-size: 14px;
     font-weight: 400;
     color: rgba(241,241,242,0.8);
+    width: 18vw;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    
+    overflow-x: hidden;
+  
   }
   .but{
     width: 100%;
@@ -148,6 +154,7 @@ li {
   height: 4vw;
   border-radius: 20vw;
   margin-right: 2vw;
+  box-shadow: 3px 3px 5px #0c1216;
 }
 .imagestylecont{
   width: 4.5vw;
@@ -155,6 +162,7 @@ li {
   border-radius: 20vw;
   margin-right: 2vw;
   margin-top: 1vh;
+  box-shadow: 3px 3px 5px #0c1216;
 }
 #topname{
   z-index: 2;
@@ -180,7 +188,7 @@ li {
     color: #f1f1f2;
     height: auto;
     width: 100%;
-    
+    /* height:7.65vh; */
     padding: 9px 12px 11px;
     margin: 5px 10px;
     background-color: #33383b;
@@ -462,7 +470,7 @@ li {
     border-radius: 7.5px;
     color: whitesmoke;
     position: relative;
-    padding: 6px 7px 8px 9px;
+    
 
   }
   .receiveMessage{
@@ -481,15 +489,17 @@ li {
     
     text-overflow: clip;
     width: auto;
-    
+    margin-right: 5px;
     word-break: break-all;
     padding-right: 20px;
+    font-size: medium;
   }
   .top{
     display: flex;
     flex-direction: row;
     margin-top: 10px;
     font-weight: 400;
+    margin-bottom: 6px;
   }
   .time{
     color: rgba(241,241,242,0.63);

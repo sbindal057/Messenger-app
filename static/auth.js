@@ -26,6 +26,7 @@ window.addEventListener("DOMContentLoaded", () => {
   document
     .getElementById("google_signin")
     .addEventListener('click', (event) => {
+      event.preventDefault();
 
       const provider = new firebase.auth.GoogleAuthProvider();
       firebase.
