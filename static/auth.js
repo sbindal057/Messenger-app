@@ -53,6 +53,7 @@ window.addEventListener("DOMContentLoaded", () => {
           });
         })
         .then(() => {
+          event.preventDefault();
           db.collection('logins').doc('namelist').get().then((doc) => {
             let l = doc.data().listt
             let kk = 0
