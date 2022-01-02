@@ -13,12 +13,18 @@
 }
 
 .welcome {
-    font-size: 1.875rem;
+    font-size: 1.1rem;
     line-height: 2.25rem;
     font-weight: 640;
-    color: #128C7E;
-    margin-right: 12vw;
+    color: #1dbba9;
+    
     text-shadow: 3px 3px 5px #0d1418;
+  
+    background-color: #183e3a;
+    border-radius: 200px;
+    padding: 0px 50px 0px 50px;
+   
+    margin: 10px;
 }
 
 .div3 {

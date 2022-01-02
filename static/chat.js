@@ -4,6 +4,7 @@ var l = {}
 var c = []
 let namedict = {}
 let contactss = []
+var dd = ''
 if (uid == null) {
     uid = "fvsdx"
 }
@@ -40,78 +41,51 @@ let html = ''
 
 db.settings({ timestampsInSnapshots: true });
 
-//opening a contact
-// db.collection('connections').doc(uid).get().then((doc) => {
-//     if (doc.exists) {
-//         contactss = doc.data().name
-//         console.log(doc.data().name)
-//         let html = ''
-//         let lii = []
-//         doc.data().name.forEach(s => {
-//             db.collection('contacts').doc(uid).get().then((docs) => {
+//sorting contact
+function sortList() {
+    // console.log('sorting')
+    var list, i, switching, b, shouldSwitch;
+    list = document.getElementById("contacts");
+    switching = true;
+    /* Make a loop that will continue until
+    no switching has been done: */
+    while (switching) {
+        // Start by saying: no switching is done:
+        switching = false;
+        b = list.getElementsByTagName("LI");
 
-//                 function con(ms) {
-//                     const li = `
-//             <li>
-//             <button id=${s.name} class = "but">
-//             <img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/The_Friends_Stage.jpg/1280px-The_Friends_Stage.jpg" class = "imagestylecont">
-//             <div style = "display:flex; flex-direction:column">
-//             <div role="gridcell" aria-colindex="2" class="top">
-//             <div class="names">
-//             ${s.name}          
-//             </div>
-//             <div class="times">
-//             ${ms['time']}
-//             </div>
-//             </div>
-
-//             <div class="lastmessage">
-//             ${ms['mssg']}
-//             </div>
-//             </div>
-//             </button>
-//             </li>
-//             `
-
-//                     html += li
-//                     console.log(s.name)
-//                     namedict[s.name] = s.uid
-//                     namedict[s.uid] = s.name
-//                     lii.push(s.name)
+        // Loop through all list items:
+        for (i = 0; i < (b.length - 1); i++) {
+            // Start by saying there should be no switching:
+            shouldSwitch = false;
+            /* Check if the next item should
+            switch place with the current item: */
+            if (b[i].getElementsByClassName("times")[0].innerHTML < b[i + 1].getElementsByClassName("times")[0].innerHTML) {
+                /* If next item is alphabetically lower than current item,
+                mark as a switch and break the loop: */
+                shouldSwitch = true;
+                break;
+            }
+        }
+        if (shouldSwitch) {
+            /* If a switch has been marked, make the switch
+            and mark the switch as done: */
+            b[i].parentNode.insertBefore(b[i + 1], b[i]);
+            switching = true;
+        }
+    }
+}
 
 
+// connected contacts
+db.collection('connections').doc(uid).onSnapshot((doc) => {
+    let mycontact = []
 
-//                 }
-//                 const contactHTML = document.getElementById('contacts')
-//                 contactHTML.innerHTML = html
-//                 lii.forEach(sss => {
-//                     document.getElementById(sss).addEventListener("click", function f() { try { hello(sss) } catch { console.error(); } });
-//                 })
-//                 // console.log(namedict[s.name])
-//                 console.log(docs.data().list[s.uid])
-//                 if (docs.data().list[s.uid].at(-1) != undefined) {
-//                     console.log(docs.data().list[s.uid].at(-1))
-//                     let ms = docs.data().list[s.uid].at(-1)
-//                     con(ms)
-//                 }
-//                 else {
-//                     let ms = { 'mssg': '', 'time': '', }
-//                     con(ms)
-//                 }
-//             })
-//         })
+    mycontact = doc.data().name
 
-//     }
-//     else {
-//         console.log("no doc")
-//     }
-// })
-db.collection('logins').doc('namelist').onSnapshot((doc) => {
-
-    contactss = doc.data().listt
-    console.log(contactss)
     let html = ''
     let lii = []
+
 
     db.collection('contacts').doc(uid).get().then((docs) => {
 
@@ -122,7 +96,7 @@ db.collection('logins').doc('namelist').onSnapshot((doc) => {
             <li>
             <button id=${s.name} class = "but">
             <img src = "${s.photo}" class = "imagestylecont">
-            <div style = "display:flex; flex-direction:column">
+            <div style = "display:flex; flex-direction:column;align-items: flex-start;">
             <div role="gridcell" aria-colindex="2" class="top">
             <div class="names">
             ${s.name}          
@@ -141,57 +115,43 @@ db.collection('logins').doc('namelist').onSnapshot((doc) => {
             `
 
             html += li
-            console.log(s.name)
-            namedict[s.name] = s.email
-            namedict[s.email] = s.name.split(" ")[0]
-            console.log(namedict[s.email])
-            namedict[s.name+'photo'] = s.photo
             lii.push(s.name)
-            // const contactHTML = document.getElementById('allcontacts')
+
             const contactHTML = document.getElementById('contacts')
             contactHTML.innerHTML = html
         }
 
         // console.log(namedict[s.name])
-        contactss.sort((a, b) => a.name.localeCompare(b.name))
-        contactss.forEach(s => {
-            db.collection('contacts').doc(uid).get().then((docss) => {
+        mycontact.sort((a, b) => a.name.localeCompare(b.name))
+        mycontact.forEach(s => {
 
 
-                let k = docss.data().list
-        
-                if(k[s.email]==undefined){
-                k[s.email] = []}
-        
-                console.log(k)
-                db.collection('contacts').doc(uid).update({
-        
-                    list: k
-                })
-            })
+            if (s.email != uid) {
+                if (docs.data().list[s.email] != undefined) {
+                    if (docs.data().list[s.email].at(-1) != undefined) {
+                        // console.log(docs.data().list[s.email].at(-1))
+                        let ms = docs.data().list[s.email].at(-1)
+                        con(ms, s)
 
-            if(s.email!=uid){
-            if (docs.data().list[s.email] != undefined) {
-                if (docs.data().list[s.email].at(-1) != undefined) {
-                    console.log(docs.data().list[s.email].at(-1))
-                    let ms = docs.data().list[s.email].at(-1)
-                    con(ms, s)
+                    }
+                    else {
+                        let ms = { 'mssg': 'Tap to chat', 'time': '', }
+                        con(ms, s)
+
+                    }
                 }
                 else {
-                    let ms = { 'mssg': '', 'time': '', }
+                    let ms = { 'mssg': 'Tap to chat', 'time': '', }
                     con(ms, s)
+
                 }
             }
-            else {
-                let ms = { 'mssg': '', 'time': '', }
-                con(ms, s)
-            }
-        }
         })
-        console.log(lii)
+        // console.log(lii)
+        sortList()
         lii.forEach(sss => {
 
-            
+
             document.getElementById(sss.split(" ")[0]).addEventListener("click", function f() { try { hello(sss) } catch { console.error(); } });
         })
     })
@@ -199,43 +159,228 @@ db.collection('logins').doc('namelist').onSnapshot((doc) => {
 
 
 })
-document.getElementById('mee').innerHTML = '<img src ='+sessionStorage.getItem('photo')+' class = "imagestyle">'
-function hello(data) {
-    console.log('clicked')
-    // if (sessionStorage.getItem('senderuid') != data)  {
+//all contacts
+db.collection('logins').doc('namelist').onSnapshot((doc) => {
 
-    // console.log(document.getElementById(data).getElementsByClassName('imagestylecont').attr('src'))
+    contactss = doc.data().listt
+    // console.log(contactss)
+    let html = ''
+    let lii = []
+
+
+    db.collection('contacts').doc(uid).get().then((docs) => {
+
+        function con(ms, s) {
+
+
+            const li = `
+            <li>
+            <button id=${s.name} class = "but">
+            <img src = "${s.photo}" class = "imagestylecont">
+            <div style = "display:flex; flex-direction:column;align-items: flex-start;">
+            <div role="gridcell" aria-colindex="2" class="top">
+            <div class="names">
+            ${s.name}          
+            </div>
+            <div class="times">
+            ${ms['time']}
+            </div>
+            </div>
+            
+            <div class="lastmessage">
+            ${ms['mssg']}
+            </div>
+            </div>
+            </button>
+            </li>
+            `
+
+            html += li
+            // console.log(s.name)
+            namedict[s.name] = s.email
+            namedict[s.email] = s.name.split(" ")[0]
+            // console.log(namedict[s.email])
+            namedict[s.name + 'photo'] = s.photo
+            lii.push(s.name)
+            // const contactHTML = document.getElementById('allcontacts')
+            const contactHTML = document.getElementById('allcontacts')
+            contactHTML.innerHTML = html
+        }
+
+        // console.log(namedict[s.name])
+        contactss.sort((a, b) => a.name.localeCompare(b.name))
+        let k = docs.data().list
+        contactss.forEach(s=>{
+
+            
+           
+
+            if (s.email != uid) {
+                if (!k[s.email]) {
+                    k[s.email] = []
+                }
+            }
+            console.log(s.email)
+
+            console.log(k)
+            
+        })
+        db.collection('contacts').doc(uid).update({
+
+            list: k
+        })
+        contactss.forEach(s => {
+            // db.collection('contacts').doc(uid).get().then((docss) => {
+
+
+            // })
+
+            if (s.email != uid) {
+                if (docs.data().list[s.email] != undefined) {
+                if (docs.data().list[s.email].at(-1) != undefined) {
+                    // console.log(docs.data().list[s.email].at(-1))
+                    let ms = docs.data().list[s.email].at(-1)
+                    con(ms, s)
+
+                }
+                else {
+                    let ms = { 'mssg': 'Tap to chat', 'time': '', }
+                    con(ms, s)
+
+                }
+                }
+                else {
+                    let ms = { 'mssg': 'Tap to chat', 'time': '', }
+                    con(ms, s)
+
+                }
+            }
+        })
+        // console.log(lii)
+        // sortList()
+        lii.forEach(sss => {
+
+
+            document.getElementById(sss.split(" ")[0]).addEventListener("click", function f() { try { hiii(sss) } catch { console.error(); } });
+        })
+    })
+
+
+
+})
+
+function hiii(data) {
+    // console.log('heyy')
+
+    db.collection('connections').doc(uid).get().then((doc) => {
+        let l = doc.data().name
+        let kk = 0
+        l.forEach(element => {
+            if (element.email == namedict[data]) kk = 1
+        });
+        if (kk == 0) {
+
+            l.push(
+                {
+                    'name': data,
+                    'email': namedict[data],
+                    'photo': namedict[data + 'photo']
+                }
+            )
+            db.collection('connections').doc(uid).update({
+
+                name: l
+
+            })
+        }
+    })
+}
+document.getElementById('mee').innerHTML = '<img src =' + sessionStorage.getItem('photo') + ' class = "imagestyle">'
+function hello(data) {
+    // console.log('clicked')
 
 
     sessionStorage.setItem('senderuid', namedict[data])
-    // console.log('off')
+
     const box = `<div class="messageArea" id="journal-scroll"> 
         <div id = "topname">
     
         </div>
-               <div class=" " id="chatmsg"style="position: relative;top: 9vh;"> 
+               <div class=" " id="chatmsg"style="position: relative;top: 6vh;"> 
                       </div> 
                            </div>`
     let b = ''
     b += box
-    console.log(data)
+    // console.log(data)
     document.getElementById('inputPlace').style.display = 'flex'
     document.getElementById('messageBox').innerHTML = b;
-    document.getElementById('topname').innerHTML = '<img src ='+namedict[data+'photo']+' class = "imagestyle">' + data;
+    document.getElementById('topname').innerHTML = '<img src =' + namedict[data + 'photo'] + ' class = "imagestyle">' + data;
 
 
 
     //printing prev message
 
 
+    var utc = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
+
     db.collection('contacts').doc(uid).get().then((doc) => {
 
         let mssgArray = doc.data().list[namedict[data]]
 
-        console.log(mssgArray)
+        // console.log(mssgArray)
         const ChatBox = document.getElementById("chatbox")
-        console.log(mssgArray)
-        if (mssgArray != undefined) mssgArray.forEach(printPrevMessage)
+        // console.log(mssgArray)
+        if (mssgArray != undefined) {
+
+            if (mssgArray[0]['date'] == utc) {
+                dd = 'TODAY'
+            }
+            else {
+                dd = mssgArray[0]['date']
+            }
+
+            var printtext = document.getElementById('chatmsg');
+
+
+
+            var printnow = '<div class = "datee">' + '<div class = "datee1">' + '<span>' + dd + '</span>' + '</div>' + '</div>'
+
+            printtext.insertAdjacentHTML('beforeend', printnow);
+
+            var box = document.getElementById('journal-scroll');
+            box.scrollTop = box.scrollHeight;
+
+            mssgArray.forEach(a => {
+
+                if (dd != 'TODAY') {
+                    if (dd != a['date']) {
+                        if (a['date'] == utc) {
+                            dd = 'TODAY'
+                        }
+                        else {
+                            dd = a['date']
+                        }
+                        var printtext = document.getElementById('chatmsg');
+
+
+
+                        var printnow = '<div class = "datee">' + '<div class = "datee1">' + '<span>' + dd + '</span>' + '</div>' + '</div>'
+
+                        printtext.insertAdjacentHTML('beforeend', printnow);
+
+                        var box = document.getElementById('journal-scroll');
+                        box.scrollTop = box.scrollHeight;
+
+
+                    }
+                }
+
+                printPrevMessage(a)
+            }
+
+
+            )
+        }
     })
     function printPrevMessage(item) {
         let NAME = item['uid']
@@ -267,19 +412,21 @@ function hello(data) {
         }
     }
 
-    // }
+
 }
-//sending message\
-console.log("ss")
+
+
 var Input = document.getElementById("typemsg");
+var utc = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
+
 
 if (document.getElementById("typemsg") != null) {
-    console.log('open')
+    // console.log('open')
     var Input = document.getElementById("typemsg");
     Input.addEventListener("keydown", function (event) {
 
         if (event.code === "Enter") {
-            console.log('enter pressed')
+            // console.log('enter pressed')
             event.preventDefault();
 
             if (Input.value != "") document.getElementById("message").click();
@@ -287,14 +434,17 @@ if (document.getElementById("typemsg") != null) {
     });
 }
 if (document.getElementById('message') != null) {
-    console.log('cc')
+    // console.log('cc')
     document.getElementById('message').onclick = () => {
+
+
         var copytext = document.getElementById('typemsg');
-        console.log("sended")
+        // console.log("sended")
         socket.emit('mssg', {
             messagE: copytext.value,
             uid: sessionStorage.getItem('senderuid'),
-            myuid: uid
+            myuid: uid,
+
 
 
         })
@@ -305,8 +455,24 @@ if (document.getElementById('message') != null) {
         var currentdate = new Date();
 
         var copiedtext = copytext.value;
+        if (dd != 'TODAY' || dd == '') {
 
-        var printnow = '<div class="sent">' + '<span class=" sent1 " >' + '<span style="padding-right:22px; margin: 0px 10px; font-size:medium;">' + copiedtext + '</span>' + '<span class="senttime" >' + ('0' + currentdate.getHours()).slice(-2)+ ':' + ('0' + currentdate.getMinutes()).slice(-2) + '</span>' + '</span>' + '</div>';
+
+            dd = 'TODAY'
+
+            var printnow = '<div class = "datee">' + '<div class = "datee1">' + '<span>' + dd + '</span>' + '</div>' + '</div>'
+
+            printtext.insertAdjacentHTML('beforeend', printnow);
+
+            var box = document.getElementById('journal-scroll');
+            box.scrollTop = box.scrollHeight;
+
+
+
+        }
+
+
+        var printnow = '<div class="sent">' + '<span class=" sent1 " >' + '<span style="padding-right:22px; margin: 0px 10px; font-size:medium;">' + copiedtext + '</span>' + '<span class="senttime" >' + ('0' + currentdate.getHours()).slice(-2) + ':' + ('0' + currentdate.getMinutes()).slice(-2) + '</span>' + '</span>' + '</div>';
 
         printtext.insertAdjacentHTML('beforeend', printnow);
 
@@ -321,8 +487,8 @@ if (document.getElementById('message') != null) {
             l[sessionStorage.getItem('senderuid')].push({
                 'uid': uid,
                 'mssg': copiedtext,
-                'time': ('0' + currentdate.getHours()).slice(-2)+ ':' + ('0' + currentdate.getMinutes()).slice(-2)
-
+                'time': ('0' + currentdate.getHours()).slice(-2) + ':' + ('0' + currentdate.getMinutes()).slice(-2),
+                'date': utc
 
             })
 
@@ -332,12 +498,33 @@ if (document.getElementById('message') != null) {
 
             })
         })
+        firebase.firestore().collection('contacts').doc(sessionStorage.getItem('senderuid')).get().then((doc) => {
+
+            let l = doc.data().list
+
+
+            l[uid].push({
+                'uid': uid,
+                'mssg': copiedtext,
+                'time': ('0' + currentdate.getHours()).slice(-2) + ':' + ('0' + currentdate.getMinutes()).slice(-2),
+                'date': utc
+
+            })
+
+            firebase.firestore().collection('contacts').doc(sessionStorage.getItem('senderuid')).update({
+
+                list: l
+
+            })
+
+        })
 
 
 
         document.getElementById(namedict[sessionStorage.getItem('senderuid')]).getElementsByClassName("lastmessage")[0].textContent = copiedtext
-        document.getElementById(namedict[sessionStorage.getItem('senderuid')]).getElementsByClassName("times")[0].textContent = ('0' + currentdate.getHours()).slice(-2)+ ':' + ('0' + currentdate.getMinutes()).slice(-2)
-
+        document.getElementById(namedict[sessionStorage.getItem('senderuid')]).getElementsByClassName("times")[0].textContent = ('0' + currentdate.getHours()).slice(-2) + ':' + ('0' + currentdate.getMinutes()).slice(-2)
+        document.getElementById(namedict[sessionStorage.getItem('senderuid')]).getElementsByClassName("lastmessage")[0].scrollTop
+        sortList()
         // console.log(namedict[s.name])
 
 
@@ -356,132 +543,58 @@ if (document.getElementById('message') != null) {
 //recieving message
 socket.on(uid, text => {
     var currentdate = new Date();
-    console.log('recieved')
-    
+    // console.log('recieved')
+
     if (sessionStorage.getItem('senderuid') == text.senderuid) {
-        console.log('printing')
+        // console.log('printing')
         var printtext = document.getElementById('chatmsg');
+        if (dd != 'TODAY' || dd == '') {
 
 
-        var printnow = '<div class="receive">' + '<div class=" receive1" >' + '<div class="receiveMessage">' + '<p class="message">' + text.messagE + '</p>' + '</div>' + '<span class="time">' + ('0' + currentdate.getHours()).slice(-2)+ ':' + ('0' + currentdate.getMinutes()).slice(-2) + '</span>' + '</div>' + '</div>';
+            dd = 'TODAY'
+
+            var printnow = '<div class = "datee">' + '<div class = "datee1">' + '<span>' + dd + '</span>' + '</div>' + '</div>'
+
+            printtext.insertAdjacentHTML('beforeend', printnow);
+
+            var box = document.getElementById('journal-scroll');
+            box.scrollTop = box.scrollHeight;
+
+
+
+        }
+
+
+        var printnow = '<div class="receive">' + '<div class=" receive1" >' + '<div class="receiveMessage">' + '<p class="message">' + text.messagE + '</p>' + '</div>' + '<span class="time">' + ('0' + currentdate.getHours()).slice(-2) + ':' + ('0' + currentdate.getMinutes()).slice(-2) + '</span>' + '</div>' + '</div>';
         printtext.insertAdjacentHTML('beforeend', printnow);
 
         var box = document.getElementById('journal-scroll');
         box.scrollTop = box.scrollHeight;
     }
     document.getElementById(namedict[sessionStorage.getItem('senderuid')]).getElementsByClassName("lastmessage")[0].textContent = text.messagE
-    document.getElementById(namedict[sessionStorage.getItem('senderuid')]).getElementsByClassName("times")[0].textContent = ('0' + currentdate.getHours()).slice(-2)+ ':' + ('0' + currentdate.getMinutes()).slice(-2)
-    // else {
-
-    //     console.log("notif")
-
-    //     document.body.insertAdjacentHTML('beforeend', '<div class="receive" id = "messagePopup"style = "position:absolute;right:calc(50% - 10rem);z-index:100;">' + '<div class="receive1" >' + '<div class="receiveMessage">' + '<p class="name">' + namedict[text.senderuid] + '</p>' + '<p class="message">' + text.messagE + '</p>' + '</div>' + '<span class="time">' + currentdate.getHours() + ':' + currentdate.getMinutes() + '</span>' + '</div>' + '</div>');
-
-    //     setTimeout(function () { document.getElementById("messagePopup").remove() }, 3000);
-    // }
-
-    firebase.firestore().collection('contacts').doc(uid).get().then((doc) => {
-
-        let l = doc.data().list
+    document.getElementById(namedict[sessionStorage.getItem('senderuid')]).getElementsByClassName("times")[0].textContent = ('0' + currentdate.getHours()).slice(-2) + ':' + ('0' + currentdate.getMinutes()).slice(-2)
 
 
-        l[text.senderuid].push({
-            'uid': text.senderuid,
-            'mssg': text.messagE,
-            'time': ('0' + currentdate.getHours()).slice(-2)+ ':' + ('0' + currentdate.getMinutes()).slice(-2)
-
-
-        })
-
-        firebase.firestore().collection('contacts').doc(uid).update({
-
-            list: l
-
-        })
-
-    })
+    sortList()
 
 });
 
+const openmodal = document.getElementById("addContact")
 
 
+openmodal.onclick = () => {
+    room_id.style.display = "block";
+    // console.log('ssssssss')
+
+}
+const closemodal = document.getElementById("close_room")
+
+closemodal.onclick = () => {
+    room_id.style.display = "none";
+
+}
 
 
-// // add contact
-// const closemodal = document.getElementById("enter")
-// closemodal.onclick = () => {
-//     // sessionStorage.getItem(document.getElementById("names").value, 0)
-
-//     //add in connection database
-//     contactss.push({ 'name': document.getElementById("names").value, 'uid': document.getElementById("uid").value })
-//     db.collection('connections').doc(uid).update({
-//         name: contactss
-//     })
-
-//     db.collection('contacts').doc(uid).get().then((doc) => {
-
-
-//         let k = doc.data().list
-
-
-//         k[document.getElementById("uid").value] = []
-
-//         console.log(k)
-//         db.collection('contacts').doc(uid).update({
-
-//             list: k
-//         })
-//     })
-//     const li = '<li>' + '<button id=' + document.getElementById("names").value + ' class = "but"><img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/The_Friends_Stage.jpg/1280px-The_Friends_Stage.jpg" class = "imagestylecont">'
-//         + '<div style = "display:flex; flex-direction:column">'
-//         + '<div role="gridcell" aria-colindex="2" class="top">'
-//         + '<div class="names">'
-//         + document.getElementById("names").value
-//         + '</div>'
-//         + '<div class="times">'
-//         + ''
-//         + '</div>'
-//         + '</div>'
-
-//         + '<div class="lastmessage">'
-//         + ''
-//         + '</div>'
-//         + '</div>'
-//         + '</button>'
-//         + '</li>'
-
-
-
-
-
-//     const contactHTML = document.getElementById('contacts')
-//     contactHTML.insertAdjacentHTML('beforeend', li);
-//     document.getElementById(document.getElementById("names").value).addEventListener("click", function f() { try { hello(document.getElementById("names").value) } catch { console.error(); } });
-//     namedict[document.getElementById("names").value] = document.getElementById("uid").value
-//     namedict[document.getElementById("uid").value] = document.getElementById("names").value
-//     const room_id = document.getElementById("room_id")
-//     room_id.style.display = "none";
-
-
-
-// }
-
-
-
-
-
-
-
-// const openmodal = document.getElementById("addContact")
-
-
-// openmodal.onclick = () => {
-//     room_id.style.display = "flex";
-//     console.log('ssssssss')
-
-// }
-
-// })
 
 
 

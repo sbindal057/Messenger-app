@@ -89,6 +89,7 @@ window.addEventListener("DOMContentLoaded", () => {
             }
           })
         })
+       
         .then(() => {
           db.collection('connections').doc(sessionStorage.getItem('user')).get().then((doc) => {
             if (doc.exists) {
