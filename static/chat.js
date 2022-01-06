@@ -85,7 +85,7 @@ db.collection('logins').doc('namelist').get().then((doc) => {
     let kk = 0
     l.forEach(element => {
       if (element.email == sessionStorage.getItem('user')) {
-        element.status = 'online'
+        
         kk = 1
       }
     });
@@ -95,7 +95,7 @@ db.collection('logins').doc('namelist').get().then((doc) => {
           'name': sessionStorage.getItem('username'),
           'email': sessionStorage.getItem('user'),
           'photo': sessionStorage.getItem('photo'),
-          'status': 'online',
+          
         }
       )
 
@@ -265,7 +265,11 @@ db.collection('logins').doc('namelist').onSnapshot((doc) => {
 
             if (s.email != uid) {
                 if (!k[s.email]) {
-                    k[s.email] = {}
+                    k[s.email] = {
+                        'status':'offline',
+                        'date':'',
+                        'time':'',
+                    }
                 }
             }
 
@@ -405,9 +409,9 @@ db.collection('status').doc(uid).onSnapshot((docs) => {
     let xxx = sessionStorage.getItem('senderuid')
     let statuss = ''
     if(k[xxx]!=undefined){
-        if(k[xxx]['status']=='online')
+        if(k[xxx]['status']=='online'||k[xxx]['status']=='offline')
         {
-            statuss = 'online'
+            statuss = k[xxx]['status']
         }
         else
         {
@@ -495,9 +499,9 @@ function hello(data) {
         let xxx = namedict[data]
         let statuss = ''
         
-            if(k[xxx]['status']=='online')
+            if(k[xxx]['status']=='online'||k[xxx]['status']=='offline')
             {
-                statuss = 'online'
+                statuss =k[xxx]['status']
             }
             else
             {
@@ -627,22 +631,7 @@ function hello(data) {
     }
    
 
-    // socket.emit('onstatus',{
-    //     status:'online',
-    //     time:'',
-    //     date:'',
-    //     uidstatus:namedict[data]+'status',
-    //     myuid:uid,
-
-    // })
-    // socket.emit('ofstatus',{
-    //     status:'ofline',
-    //     time:('0' + currentdate.getHours()).slice(-2) + ':' + ('0' + currentdate.getMinutes()).slice(-2) ,
-    //     date: new Date().toJSON().slice(0, 10).replace(/-/g, '/'),
-    //     uidstatus:xxx+'status',
-    //     myuid:uid,
-
-    // })
+    
     
     
 
@@ -887,16 +876,7 @@ search.oninput = function () {
     // }
 };
 
-// socket.on(uid+'status', text => {
-//     // { status: ` ${st.status}`,time:`${st.time}`,date:`${st.date}`,of:`${st.myuid}` }
 
-//     if(==text.of)
-//     {
-//             }
-    
-    
-
-// })
 
 
 

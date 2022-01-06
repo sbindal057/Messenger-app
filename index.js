@@ -129,15 +129,7 @@ io.on('connection', socket => {
     console.log(mssg);
     io.emit(mssg.uid, { messagE: ` ${mssg.messagE}`,recieveruid:`${mssg.uid}`,senderuid:`${mssg.myuid}` });
   });
-  // socket.on('onstatus', (st) => {
-  //   console.log(st);
-  //   io.emit(st.uidstatus, { status: ` ${st.status}`,time:`${st.time}`,date:`${st.date}`,of:`${st.myuid}` });
-  // });
-  // socket.on('ofstatus', (st) => {
-    
-  //   io.emit(st.uidstatus, { status: ` ${st.status}`,time:`${st.time}`,date:`${st.date}`,of:`${st.myuid}` });
-  // });
-
+ 
   io.emit('id', socket.id)
 
 })
