@@ -52,79 +52,74 @@ window.addEventListener("DOMContentLoaded", () => {
             });
           });
         })
-        .then(() => {
-          event.preventDefault();
-          db.collection('logins').doc('namelist').get().then((doc) => {
-            let l = doc.data().listt
-            let kk = 0
-            l.forEach(element => {
-              if (element.email == sessionStorage.getItem('user')) {
-                element.status = 'online'
-                kk = 1
-              }
-            });
-            if (kk == 0) {
-              l.push(
-                {
-                  'name': sessionStorage.getItem('username'),
-                  'email': sessionStorage.getItem('user'),
-                  'photo': sessionStorage.getItem('photo'),
-                  'status': 'online',
-                }
-              )
+        // .then(() => {
+        //   event.preventDefault();
+        //   // db.collection('logins').doc('namelist').get().then((doc) => {
+        //   //   let l = doc.data().listt
+        //   //   let kk = 0
+        //   //   l.forEach(element => {
+        //   //     if (element.email == sessionStorage.getItem('user')) {
+        //   //       element.status = 'online'
+        //   //       kk = 1
+        //   //     }
+        //   //   });
+        //   //   if (kk == 0) {
+        //   //     l.push(
+        //   //       {
+        //   //         'name': sessionStorage.getItem('username'),
+        //   //         'email': sessionStorage.getItem('user'),
+        //   //         'photo': sessionStorage.getItem('photo'),
+        //   //         'status': 'online',
+        //   //       }
+        //   //     )
 
-            }
-            db.collection('logins').doc('namelist').update({
+        //   //   }
+        //   //   db.collection('logins').doc('namelist').update({
 
-              listt: l
+        //   //     listt: l
 
-            })
+        //   //   })
 
-          })
-          .catch(error=>{
-            console.log(error)
-          })
-
-        })
-        .catch(error=>{
-          console.log(error)
-        })
-        .then(() => {
-          db.collection('contacts').doc(sessionStorage.getItem('user')).get().then((doc) => {
-            if (doc.exists) {
-              console.log("Document data:", doc);
-            }
-            else {
-              return db.collection('contacts').doc(sessionStorage.getItem('user')).set({
-                'list': {}
-              })
-            }
-          })
-        })
-        .then(() => {
-          db.collection('status').doc(sessionStorage.getItem('user')).get().then((doc) => {
-            if (doc.exists) {
-              console.log("Document data:", doc);
-            }
-            else {
-              return db.collection('status').doc(sessionStorage.getItem('user')).set({
-                'list': {}
-              })
-            }
-          })
-        })
-        .then(() => {
-          db.collection('connections').doc(sessionStorage.getItem('user')).get().then((doc) => {
-            if (doc.exists) {
-              console.log("Document data:", doc);
-            }
-            else {
-              return db.collection('connections').doc(sessionStorage.getItem('user')).set({
-                'name': []
-              })
-            }
-          })
-        })
+        //   // })
+          
+        // })
+        
+        // .then(() => {
+        //   // db.collection('contacts').doc(sessionStorage.getItem('user')).get().then((doc) => {
+        //   //   if (doc.exists) {
+        //   //     console.log("Document data:", doc);
+        //   //   }
+        //   //   else {
+        //   //     return db.collection('contacts').doc(sessionStorage.getItem('user')).set({
+        //   //       'list': {}
+        //   //     })
+        //   //   }
+        //   // })
+        // })
+        // .then(() => {
+        //   // db.collection('status').doc(sessionStorage.getItem('user')).get().then((doc) => {
+        //   //   if (doc.exists) {
+        //   //     console.log("Document data:", doc);
+        //   //   }
+        //   //   else {
+        //   //     return db.collection('status').doc(sessionStorage.getItem('user')).set({
+        //   //       'list': {}
+        //   //     })
+        //   //   }
+        //   // })
+        // })
+        // .then(() => {
+        //   // db.collection('connections').doc(sessionStorage.getItem('user')).get().then((doc) => {
+        //   //   if (doc.exists) {
+        //   //     console.log("Document data:", doc);
+        //   //   }
+        //   //   else {
+        //   //     return db.collection('connections').doc(sessionStorage.getItem('user')).set({
+        //   //       'name': []
+        //   //     })
+        //   //   }
+        //   // })
+        // })
         
         .then(() => {
          
