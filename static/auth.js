@@ -58,22 +58,28 @@ window.addEventListener("DOMContentLoaded", () => {
             let l = doc.data().listt
             let kk = 0
             l.forEach(element => {
-              if(element.email == sessionStorage.getItem('user'))kk = 1
-            });
-            if(kk==0){
-            l.push(
-              {
-                'name': sessionStorage.getItem('username'),
-                'email': sessionStorage.getItem('user'),
-                'photo': sessionStorage.getItem('photo')
+              if (element.email == sessionStorage.getItem('user')) {
+                element.status = 'online'
+                kk = 1
               }
-            )
+            });
+            if (kk == 0) {
+              l.push(
+                {
+                  'name': sessionStorage.getItem('username'),
+                  'email': sessionStorage.getItem('user'),
+                  'photo': sessionStorage.getItem('photo'),
+                  'status': 'online',
+                }
+              )
+
+            }
             db.collection('logins').doc('namelist').update({
 
               listt: l
 
-          })
-        }
+            })
+
           })
 
         })
@@ -89,7 +95,18 @@ window.addEventListener("DOMContentLoaded", () => {
             }
           })
         })
-       
+        .then(() => {
+          db.collection('status').doc(sessionStorage.getItem('user')).get().then((doc) => {
+            if (doc.exists) {
+              console.log("Document data:", doc);
+            }
+            else {
+              return db.collection('status').doc(sessionStorage.getItem('user')).set({
+                'list': {}
+              })
+            }
+          })
+        })
         .then(() => {
           db.collection('connections').doc(sessionStorage.getItem('user')).get().then((doc) => {
             if (doc.exists) {
@@ -102,8 +119,12 @@ window.addEventListener("DOMContentLoaded", () => {
             }
           })
         })
+        
         .then(() => {
-          return firebase.auth().signOut();
+         
+
+          
+          return firebase.auth().signOut
         })
         .then(() => {
           window.location.assign("/profile");

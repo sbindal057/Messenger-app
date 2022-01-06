@@ -3,6 +3,7 @@ let uid = sessionStorage.getItem('user')
 var l = {}
 var c = []
 let namedict = {}
+let currentdate = new Date()
 let contactss = []
 var dd = ''
 if (uid == null) {
@@ -43,7 +44,7 @@ db.settings({ timestampsInSnapshots: true });
 
 //sorting contact
 function sortList() {
-    // console.log('sorting')
+
     var list, i, switching, b, shouldSwitch;
     list = document.getElementById("contacts");
     switching = true;
@@ -76,7 +77,8 @@ function sortList() {
     }
 }
 
-
+let lii = []
+let lis = []
 // connected contacts
 db.collection('connections').doc(uid).onSnapshot((doc) => {
     let mycontact = []
@@ -84,14 +86,27 @@ db.collection('connections').doc(uid).onSnapshot((doc) => {
     mycontact = doc.data().name
 
     let html = ''
-    let lii = []
+
 
 
     db.collection('contacts').doc(uid).get().then((docs) => {
 
         function con(ms, s) {
             let nam = s.name
-            // console.log(lii.find(s.name.split(' ')[0]))
+
+            let showingtimestamp = ''
+            if (ms['date'] == new Date().toJSON().slice(0, 10).replace(/-/g, '/')) {
+                showingtimestamp = ms['time']
+
+            }
+            else if (ms['date'] == new Date(Date.now() - 864e5).toJSON().slice(0, 10).replace(/-/g, '/')) {
+                showingtimestamp = 'Yesterday'
+
+            }
+            else if (!ms['date']) showingtimestamp = ''
+            else {
+                showingtimestamp = ms['date']
+            }
             const li = `
             <li>
             <button id=${s.name} class = "but">
@@ -102,7 +117,7 @@ db.collection('connections').doc(uid).onSnapshot((doc) => {
             ${s.name}          
             </div>
             <div class="times">
-            ${ms['time']}
+            ${showingtimestamp}
             </div>
             </div>
             
@@ -113,15 +128,18 @@ db.collection('connections').doc(uid).onSnapshot((doc) => {
             </button>
             </li>
             `
+            namedict[s.name] = s.email
+            namedict[s.email] = s.name.split(" ")[0]
+            namedict[s.name + 'photo'] = s.photo
 
             html += li
-            lii.push(s.name)
+            lis.push(s.name)
 
             const contactHTML = document.getElementById('contacts')
             contactHTML.innerHTML = html
         }
 
-        // console.log(namedict[s.name])
+
         mycontact.sort((a, b) => a.name.localeCompare(b.name))
         mycontact.forEach(s => {
 
@@ -129,7 +147,7 @@ db.collection('connections').doc(uid).onSnapshot((doc) => {
             if (s.email != uid) {
                 if (docs.data().list[s.email] != undefined) {
                     if (docs.data().list[s.email].at(-1) != undefined) {
-                        // console.log(docs.data().list[s.email].at(-1))
+
                         let ms = docs.data().list[s.email].at(-1)
                         con(ms, s)
 
@@ -147,9 +165,9 @@ db.collection('connections').doc(uid).onSnapshot((doc) => {
                 }
             }
         })
-        // console.log(lii)
+
         sortList()
-        lii.forEach(sss => {
+        lis.forEach(sss => {
 
 
             document.getElementById(sss.split(" ")[0]).addEventListener("click", function f() { try { hello(sss) } catch { console.error(); } });
@@ -159,20 +177,41 @@ db.collection('connections').doc(uid).onSnapshot((doc) => {
 
 
 })
+
+
+
 //all contacts
 db.collection('logins').doc('namelist').onSnapshot((doc) => {
 
     contactss = doc.data().listt
-    // console.log(contactss)
-    let html = ''
-    let lii = []
 
+    let html = ''
+
+    db.collection('status').doc(uid).get().then((docs) => {
+        let k = docs.data().list
+        contactss.forEach(s => {
+
+
+
+
+            if (s.email != uid) {
+                if (!k[s.email]) {
+                    k[s.email] = {}
+                }
+            }
+
+
+        })
+        db.collection('status').doc(uid).update({
+
+            list: k
+        })
+
+    })
 
     db.collection('contacts').doc(uid).get().then((docs) => {
 
-        function con(ms, s) {
-
-
+        function con(s) {
             const li = `
             <li>
             <button id=${s.name} class = "but">
@@ -183,12 +222,12 @@ db.collection('logins').doc('namelist').onSnapshot((doc) => {
             ${s.name}          
             </div>
             <div class="times">
-            ${ms['time']}
+            ${''}
             </div>
             </div>
             
             <div class="lastmessage">
-            ${ms['mssg']}
+            ${'Tap to add'}
             </div>
             </div>
             </button>
@@ -196,34 +235,29 @@ db.collection('logins').doc('namelist').onSnapshot((doc) => {
             `
 
             html += li
-            // console.log(s.name)
-            namedict[s.name] = s.email
-            namedict[s.email] = s.name.split(" ")[0]
-            // console.log(namedict[s.email])
-            namedict[s.name + 'photo'] = s.photo
+
+
             lii.push(s.name)
-            // const contactHTML = document.getElementById('allcontacts')
+
             const contactHTML = document.getElementById('allcontacts')
             contactHTML.innerHTML = html
         }
 
-        // console.log(namedict[s.name])
+
         contactss.sort((a, b) => a.name.localeCompare(b.name))
         let k = docs.data().list
-        contactss.forEach(s=>{
+        contactss.forEach(s => {
 
-            
-           
+
+
 
             if (s.email != uid) {
                 if (!k[s.email]) {
                     k[s.email] = []
                 }
             }
-            console.log(s.email)
 
-            console.log(k)
-            
+
         })
         db.collection('contacts').doc(uid).update({
 
@@ -236,27 +270,18 @@ db.collection('logins').doc('namelist').onSnapshot((doc) => {
             // })
 
             if (s.email != uid) {
-                if (docs.data().list[s.email] != undefined) {
-                if (docs.data().list[s.email].at(-1) != undefined) {
-                    // console.log(docs.data().list[s.email].at(-1))
-                    let ms = docs.data().list[s.email].at(-1)
-                    con(ms, s)
+                namedict[s.name] = s.email
+                namedict[s.email] = s.name.split(" ")[0]
+                namedict[s.name + 'photo'] = s.photo
+                console.log(lis)
+                if (!lis.find(k => {
+                    return k == s.name
+                }))
+                    con(s)
 
-                }
-                else {
-                    let ms = { 'mssg': 'Tap to chat', 'time': '', }
-                    con(ms, s)
 
-                }
-                }
-                else {
-                    let ms = { 'mssg': 'Tap to chat', 'time': '', }
-                    con(ms, s)
-
-                }
             }
         })
-        // console.log(lii)
         // sortList()
         lii.forEach(sss => {
 
@@ -266,11 +291,13 @@ db.collection('logins').doc('namelist').onSnapshot((doc) => {
     })
 
 
-
 })
 
+
+
+
 function hiii(data) {
-    // console.log('heyy')
+
 
     db.collection('connections').doc(uid).get().then((doc) => {
         let l = doc.data().name
@@ -294,16 +321,91 @@ function hiii(data) {
             })
         }
     })
+    var elem = document.getElementById("allcontacts").querySelectorAll("#" + data.split(' ')[0]);
+    elem[0].outerHTML = ''
+    lii.remove(data)
+
+
+
 }
+// sessionStorage.setItem('senderuid','')
 document.getElementById('mee').innerHTML = '<img src =' + sessionStorage.getItem('photo') + ' class = "imagestyle">'
+db.collection('status').doc(uid).onSnapshot((docs) => {
+    console.log('snap')
+    let k = docs.data().list
+    let xxx = sessionStorage.getItem('senderuid')
+    let statuss = ''
+    if(k[xxx]!=undefined){
+        if(k[xxx]['status']=='online')
+        {
+            statuss = 'online'
+        }
+        else
+        {
+            statuss = 'Last seen '
+            if(k[xxx]['date']==new Date().toJSON().slice(0, 10).replace(/-/g, '/')){
+                statuss+=k[xxx]['time']
+            }
+            else{
+                statuss+=k[xxx]['date']
+            }
+
+        }
+    
+    }
+    if(document.getElementById('status'))
+        document.getElementById('status').innerHTML = statuss
+    
+   
+
+})
 function hello(data) {
-    // console.log('clicked')
+    console.log('clicked')
+    let xxx = sessionStorage.getItem('senderuid')
+    console.log('clicked')
+    console.log(xxx)    
+    if(xxx!=null){
+    db.collection('status').doc(xxx).get().then((docs) => {
+        console.log('xx')
+        let k = docs.data().list
+        k[uid] = {
+            'status':'ofline',
+            'time':('0' + currentdate.getHours()).slice(-2) + ':' + ('0' + currentdate.getMinutes()).slice(-2),
+            'date': new Date().toJSON().slice(0, 10).replace(/-/g, '/'),
+        }
+        db.collection('status').doc(xxx).update({
+
+            list: k
+        })
+    
+    })
+}
+    db.collection('status').doc(namedict[data]).get().then((docs) => {
+        console.log('xxxxxxx')
+        let k = docs.data().list
+        k[uid] = {
+            'status':'online',
+            'time':'',
+            'date':'',
+        }
+        db.collection('status').doc(namedict[data]).update({
+
+            list: k
+        })
+    
+    })
+
+    console.log('clicked')
+    
+
+
 
 
     sessionStorage.setItem('senderuid', namedict[data])
-
+    console.log('clicked')
     const box = `<div class="messageArea" id="journal-scroll"> 
         <div id = "topname">
+        
     
         </div>
                <div class=" " id="chatmsg"style="position: relative;top: 6vh;"> 
@@ -311,10 +413,42 @@ function hello(data) {
                            </div>`
     let b = ''
     b += box
-    // console.log(data)
+    console.log(b)
+
     document.getElementById('inputPlace').style.display = 'flex'
     document.getElementById('messageBox').innerHTML = b;
-    document.getElementById('topname').innerHTML = '<img src =' + namedict[data + 'photo'] + ' class = "imagestyle">' + data;
+    document.getElementById('topname').innerHTML = '<img src =' + namedict[data + 'photo'] + ' class = "imagestyle">' + '<div>'+data+'<p id = "status"class = "lastmessage"></p></div>';
+    // console.log(namedict[data + 'photo'])
+    db.collection('status').doc(uid).get().then((docs) => {
+        
+        console.log('snap')
+        let k = docs.data().list
+        let xxx = namedict[data]
+        let statuss = ''
+        
+            if(k[xxx]['status']=='online')
+            {
+                statuss = 'online'
+            }
+            else
+            {
+                statuss = 'Last seen '
+                if(k[xxx]['date']==new Date().toJSON().slice(0, 10).replace(/-/g, '/')){
+                    statuss+=k[xxx]['time']
+                }
+                else{
+                    statuss+=k[xxx]['date']
+                }
+    
+            }
+        
+        console.log(statuss)
+
+        if(document.getElementById('status'))
+            document.getElementById('status').innerHTML = statuss
+       
+    
+    })
 
 
 
@@ -327,13 +461,18 @@ function hello(data) {
 
         let mssgArray = doc.data().list[namedict[data]]
 
-        // console.log(mssgArray)
+
         const ChatBox = document.getElementById("chatbox")
-        // console.log(mssgArray)
-        if (mssgArray != undefined) {
+        console.log(mssgArray)
+
+        if (mssgArray[0] != undefined) {
 
             if (mssgArray[0]['date'] == utc) {
                 dd = 'TODAY'
+            }
+            else if (mssgArray[0]['date'] == new Date(Date.now() - 864e5).toJSON().slice(0, 10).replace(/-/g, '/')) {
+                dd = 'Yesterday'
+
             }
             else {
                 dd = mssgArray[0]['date']
@@ -353,9 +492,14 @@ function hello(data) {
             mssgArray.forEach(a => {
 
                 if (dd != 'TODAY') {
-                    if (dd != a['date']) {
+
+                    if ((dd != a['date'] && dd != 'Yesterday') || (dd == 'Yesterday' && a['date'] != new Date(Date.now() - 864e5).toJSON().slice(0, 10).replace(/-/g, '/'))) {
                         if (a['date'] == utc) {
                             dd = 'TODAY'
+                        }
+                        else if (a['date'] == new Date(Date.now() - 864e5).toJSON().slice(0, 10).replace(/-/g, '/')) {
+                            dd = 'Yesterday'
+
                         }
                         else {
                             dd = a['date']
@@ -373,6 +517,7 @@ function hello(data) {
 
 
                     }
+
                 }
 
                 printPrevMessage(a)
@@ -411,7 +556,26 @@ function hello(data) {
 
         }
     }
+   
 
+    // socket.emit('onstatus',{
+    //     status:'online',
+    //     time:'',
+    //     date:'',
+    //     uidstatus:namedict[data]+'status',
+    //     myuid:uid,
+
+    // })
+    // socket.emit('ofstatus',{
+    //     status:'ofline',
+    //     time:('0' + currentdate.getHours()).slice(-2) + ':' + ('0' + currentdate.getMinutes()).slice(-2) ,
+    //     date: new Date().toJSON().slice(0, 10).replace(/-/g, '/'),
+    //     uidstatus:xxx+'status',
+    //     myuid:uid,
+
+    // })
+    
+    
 
 }
 
@@ -421,12 +585,12 @@ var utc = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
 
 
 if (document.getElementById("typemsg") != null) {
-    // console.log('open')
+
     var Input = document.getElementById("typemsg");
     Input.addEventListener("keydown", function (event) {
 
         if (event.code === "Enter") {
-            // console.log('enter pressed')
+
             event.preventDefault();
 
             if (Input.value != "") document.getElementById("message").click();
@@ -434,12 +598,12 @@ if (document.getElementById("typemsg") != null) {
     });
 }
 if (document.getElementById('message') != null) {
-    // console.log('cc')
+
     document.getElementById('message').onclick = () => {
 
 
         var copytext = document.getElementById('typemsg');
-        // console.log("sended")
+
         socket.emit('mssg', {
             messagE: copytext.value,
             uid: sessionStorage.getItem('senderuid'),
@@ -525,7 +689,7 @@ if (document.getElementById('message') != null) {
         document.getElementById(namedict[sessionStorage.getItem('senderuid')]).getElementsByClassName("times")[0].textContent = ('0' + currentdate.getHours()).slice(-2) + ':' + ('0' + currentdate.getMinutes()).slice(-2)
         document.getElementById(namedict[sessionStorage.getItem('senderuid')]).getElementsByClassName("lastmessage")[0].scrollTop
         sortList()
-        // console.log(namedict[s.name])
+
 
 
 
@@ -543,10 +707,10 @@ if (document.getElementById('message') != null) {
 //recieving message
 socket.on(uid, text => {
     var currentdate = new Date();
-    // console.log('recieved')
+
 
     if (sessionStorage.getItem('senderuid') == text.senderuid) {
-        // console.log('printing')
+
         var printtext = document.getElementById('chatmsg');
         if (dd != 'TODAY' || dd == '') {
 
@@ -584,7 +748,7 @@ const openmodal = document.getElementById("addContact")
 
 openmodal.onclick = () => {
     room_id.style.display = "block";
-    // console.log('ssssssss')
+
 
 }
 const closemodal = document.getElementById("close_room")
@@ -594,9 +758,76 @@ closemodal.onclick = () => {
 
 }
 
+//search
+var search = document.getElementById("search");
+search.oninput = function () {
 
 
 
+
+    if (search.value != "") {
+
+        document.getElementById('finded').style.display = 'block';
+        document.getElementById('finded1').innerHTML = ''
+
+        let xx = ''
+        let results = []
+        lii.forEach(s => {
+            if (s.substr(0, search.value.length).toLowerCase() == (search.value).toLowerCase()) {
+                results.push(s)
+
+                const lee = `
+                    <li>
+                    <button id=${s.split(" ")[0] + 'finded'} class = "but">
+                    <img src = "${namedict[s + 'photo']}" class = "imagestylecont">
+                    <div style = "display:flex; flex-direction:column;align-items: flex-start;">
+                    <div role="gridcell" aria-colindex="2" class="top">
+                    <div class="names">
+                    ${s}          
+                    </div>
+                    
+                    </div>
+                    <div class="lastmessage">
+                    ${'Tap to add'}
+                    </div>
+                    </div>
+                    </button>
+                    </li>
+                    `
+
+
+                xx += lee
+
+                const contactHTML = document.getElementById('finded1')
+                contactHTML.innerHTML = xx
+
+            }
+        })
+        results.forEach(s => {
+            document.getElementById(s.split(" ")[0] + 'finded').addEventListener("click", function f() { try { hiii(s) } catch { console.error(); } });
+        })
+
+
+
+    }
+    else {
+
+        if (document.getElementById('finded').style.display == 'block') document.getElementById('finded').style.display = 'none'
+
+    }
+    // }
+};
+
+// socket.on(uid+'status', text => {
+//     // { status: ` ${st.status}`,time:`${st.time}`,date:`${st.date}`,of:`${st.myuid}` }
+
+//     if(==text.of)
+//     {
+//             }
+    
+    
+
+// })
 
 
 

@@ -10,10 +10,17 @@
     
 }
   #addContact{
-    background-color: whitesmoke;
-    
-    border-radius: 50px;
-    padding: 5px;
+    z-index: 2;
+    box-shadow: rgb(30 30 30 / 75%) 0px 0px 20px -2px;
+    width: 30vw;
+    height: 8vh;
+    background-color: #2a2f32;
+    color: rgba(241,241,242,0.92);
+    font-size: 20px;
+    font-weight: 600;
+    align-items: center;
+    padding-left: 1vw;
+    padding-top: 8px;
   }
   #uid{
     color: #f1f1f2;
@@ -87,10 +94,10 @@
   .contacts{
     z-index: 2;
     box-shadow: rgb(30 30 30 / 75%) 0px 0px 20px -2px;
-    width: 30vw;
+    width: 31vw;
     height: 91vh;
     position: absolute;
-    left: 10px;
+    /* left: 10px; */
     bottom: 0px;
     background-color: #131c21;
     overflow: auto;
@@ -152,10 +159,10 @@ li {
 #mee{
   z-index: 2;
   box-shadow: rgb(30 30 30 / 75%) 0px 0px 20px -2px;
-  width: 30vw;
+  width: 31vw;
   height: 9vh;
   position: absolute;
-  left: 10px;
+  /* left: 10px; */
   top: 0px;
   background-color: #2a2f32;
   /* overflow: auto; */
@@ -331,7 +338,7 @@ li {
     top: 0;
     left: 0;
     overflow-y: auto;
-    background-color: rgba(107, 114, 128, 0.75);
+    background-color: rgba(42, 62, 72, 0.75);
    
     width: 100vw;
     height: 100vh;
@@ -397,24 +404,14 @@ li {
   #close_room {
     
     position: absolute;
-    top: 0.1vh;
-    right: 1vh;
+    top: 7.7vh;
+    right: 81vh;
+    z-index: 3;
 
 
   }
 
-  #close_room:hover {
-    background-color: red;
-  }
-
-  #close_room:focus {
-    outline: none;
-    background-color: red;
-    box-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-    --tw-ring-offset-width: 2px;
-    box-shadow: 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color), var(--tw-ring-shadow);
-    --tw-ring-color: rgba(239, 68, 68, var(--tw-ring-opacity));
-  }
+ 
   .receive{
     display: flex;
     justify-content: start;
@@ -576,4 +573,28 @@ li {
     margin: 1vh;
   }
 
-  
+  #search{
+    color: #f1f1f2;
+    height: auto;
+    width: 100%;
+    height: 6vh;
+    padding: 9px 12px 11px;
+    margin: 5px 5px;
+    background-color: #33383b;
+    border: 1px solid #33383b;
+    border-radius: 21px;
+  }
+  #in
+  {
+    z-index: 9;
+    width: 29vw;
+    height: 7vh;
+    font-size: 15px;
+    word-break: break-all;
+    word-wrap: break-word;
+    white-space: normal;
+    align-items: center;
+  }
+  #close_rooma:hover {
+    background-color: none;
+  }
