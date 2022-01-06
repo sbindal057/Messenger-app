@@ -81,7 +81,13 @@ window.addEventListener("DOMContentLoaded", () => {
             })
 
           })
+          .catch(error=>{
+            console.log(error)
+          })
 
+        })
+        .catch(error=>{
+          console.log(error)
         })
         .then(() => {
           db.collection('contacts').doc(sessionStorage.getItem('user')).get().then((doc) => {
