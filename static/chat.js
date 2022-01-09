@@ -346,10 +346,14 @@ db.collection('logins').doc('namelist').onSnapshot((doc) => {
                 namedict[s.name] = s.email
                 namedict[s.email] = s.name.split(" ")[0]
                 namedict[s.name + 'photo'] = s.photo
-                console.log(lis)
-                if (!lis.find(k => {
-                    return k == s.name
-                }))
+                console.log(lis.length)
+                let ff = 0
+                lis.forEach(kess => {
+                    console.log('fsedf')
+                    if(kess==s.name)ff=1
+                })
+                console.log(ff)
+                if (ff!=1)
                     con(s)
 
 
@@ -740,6 +744,32 @@ if (document.getElementById('message') != null) {
             })
 
         })
+        db.collection('connections').doc(sessionStorage.getItem('senderuid')).get().then((doc) => {
+            let l = doc.data().name
+            let kk = 0
+            l.forEach(element => {
+                if (element.email == uid) kk = 1
+            });
+            console.log(kk)
+            console.log(sessionStorage.getItem('senderuid'))
+            if (kk == 0) {
+    
+                l.push(
+                    {
+                        'name': sessionStorage.getItem('username'),
+                        'email': uid,
+                        'photo':sessionStorage.getItem('photo')
+                    }
+                )
+                console.log(sessionStorage.getItem('senderuid'))
+                db.collection('connections').doc(sessionStorage.getItem('senderuid')).update({
+    
+                    name: l
+    
+                })
+            }
+        })
+
 
 
 
@@ -876,7 +906,26 @@ search.oninput = function () {
     // }
 };
 
+document.getElementById('logout').onclick = ()=>{
 
+    if(sessionStorage.getItem('senderuid')!=null){
+        db.collection('status').doc(sessionStorage.getItem('senderuid')).get().then((docs) => {
+            console.log('xx')
+            let k = docs.data().list
+            k[uid] = {
+                'status':'ofline',
+                'time':('0' + currentdate.getHours()).slice(-2) + ':' + ('0' + currentdate.getMinutes()).slice(-2),
+                'date': new Date().toJSON().slice(0, 10).replace(/-/g, '/'),
+            }
+            db.collection('status').doc(sessionStorage.getItem('senderuid')).update({
+    
+                list: k
+            })
+        
+        })
+    }
+
+}
 
 
 
