@@ -846,7 +846,7 @@ closemodal.onclick = () => {
 
 }
 
-//search
+//search in all contacts
 var search = document.getElementById("search");
 search.oninput = function () {
 
@@ -901,6 +901,90 @@ search.oninput = function () {
     else {
 
         if (document.getElementById('finded').style.display == 'block') document.getElementById('finded').style.display = 'none'
+
+    }
+    // }
+};
+
+document.getElementById('logout').onclick = ()=>{
+
+    if(sessionStorage.getItem('senderuid')!=null){
+        db.collection('status').doc(sessionStorage.getItem('senderuid')).get().then((docs) => {
+            console.log('xx')
+            let k = docs.data().list
+            k[uid] = {
+                'status':'ofline',
+                'time':('0' + currentdate.getHours()).slice(-2) + ':' + ('0' + currentdate.getMinutes()).slice(-2),
+                'date': new Date().toJSON().slice(0, 10).replace(/-/g, '/'),
+            }
+            db.collection('status').doc(sessionStorage.getItem('senderuid')).update({
+    
+                list: k
+            })
+        
+        })
+    }
+
+}
+
+//search in added contacts
+
+var searchcon = document.getElementById("searchcon");
+searchcon.oninput = function () {
+
+
+
+
+    if (searchcon.value != "") {
+
+        document.getElementById('findedcon').style.display = 'block';
+        document.getElementById('findedcon1').innerHTML = ''
+
+        let xx = ''
+        let results = []
+        lis.forEach(s => {
+            if (s.substr(0, searchcon.value.length).toLowerCase() == (searchcon.value).toLowerCase()) {
+                results.push(s)
+
+                const lee = `
+                    <li>
+                    <button id=${s.split(" ")[0] + 'findedcon'} class = "but">
+                    <img src = "${namedict[s + 'photo']}" class = "imagestylecont">
+                    <div style = "display:flex; flex-direction:column;align-items: flex-start;">
+                    <div role="gridcell" aria-colindex="2" class="top">
+                    <div class="names">
+                    ${s}          
+                    </div>
+                    <div class="times">
+            ${document.getElementById(s.split(" ")[0]).getElementsByClassName("times")[0].textContent}
+            </div>
+                    </div>
+                    <div class="lastmessage">
+                    ${document.getElementById(s.split(" ")[0]).getElementsByClassName("lastmessage")[0].textContent}
+                    </div>
+                    </div>
+                    </button>
+                    </li>
+                    `
+
+
+                xx += lee
+
+                const contactHTML = document.getElementById('findedcon1')
+                contactHTML.innerHTML = xx
+
+            }
+        })
+        results.forEach(s => {
+            document.getElementById(s.split(" ")[0] + 'findedcon').addEventListener("click", function f() { try { hello(s) } catch { console.error(); } });
+        })
+
+
+
+    }
+    else {
+
+        if (document.getElementById('findedcon').style.display == 'block') document.getElementById('findedcon').style.display = 'none'
 
     }
     // }
