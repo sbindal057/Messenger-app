@@ -1,6 +1,7 @@
 const socket = io('/')
 let uid = sessionStorage.getItem('user')
 var l = {}
+let mssgArray = []
 var c = []
 let namedict = {}
 let currentdate = new Date()
@@ -235,13 +236,14 @@ db.collection('connections').doc(uid).onSnapshot((doc) => {
             }
         })
 
-        sortList()
+        
         lis.forEach(sss => {
 
 
             document.getElementById(sss.split(" ")[0]).addEventListener("click", function f() { try { hello(sss) } catch { console.error(); } });
         })
     })
+    sortList()
 
 
 
@@ -536,7 +538,7 @@ function hello(data) {
 
     db.collection('contacts').doc(uid).get().then((doc) => {
 
-        let mssgArray = doc.data().list[namedict[data]]
+         mssgArray = doc.data().list[namedict[data]]
 
 
         const ChatBox = document.getElementById("chatbox")
