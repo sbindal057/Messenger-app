@@ -207,6 +207,7 @@ db.collection('connections').doc(uid).onSnapshot((doc) => {
 
             const contactHTML = document.getElementById('contacts')
             contactHTML.innerHTML = html
+            sortList()
         }
 
 
